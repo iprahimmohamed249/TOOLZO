@@ -1,0 +1,1568 @@
+<!-- The full HTML document for the TOOLZO website, now with animated splash screen, improved image handling, and mobile responsiveness -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOOLZO</title>
+    <!-- Favicon is now the animated lines from the logo -->
+    <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><path d='M25 100 C 65 20, 135 180, 175 100' stroke-width='12' stroke-linecap='round' stroke='%239d50bb'/><path d='M 25 105 C 65 25, 135 185, 175 105' stroke-width='12' stroke-linecap='round' stroke='%2361045f'/><path d='M 25 95 C 65 15, 135 175, 175 95' stroke-width='12' stroke-linecap='round' stroke='%232b5876'/><path d='M 25 110 C 65 30, 135 190, 175 110' stroke-width='12' stroke-linecap='round' stroke='%234e4376'/><path d='M 25 90 C 65 10, 135 170, 175 90' stroke-width='12' stroke-linecap='round' stroke='%238605d8'/></svg>" type="image/svg+xml">
+    <!-- Inter font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <!-- SheetJS for XLSX parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        /* Custom CSS to ensure smooth scrolling and font */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-bg {
+            /* A subtle gradient background for the hero section */
+            background: radial-gradient(circle at top left, #3b0764, #1f1f3a 50%, #000000 100%);
+        }
+        .tool-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Splash Screen specific styles */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #1e1e2d; /* Dark background from the logo image */
+            z-index: 100;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        #splash-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #splash-logo-container {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #splash-logo-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: text-fade-in 1s ease-out 1.5s forwards;
+            margin-top: -1rem; /* Negative margin to pull the text up */
+        }
+        
+        /* SVG Animation */
+        .path-stroke {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw-path 2s ease-out forwards;
+        }
+
+        .path-1 {
+            stroke: #9d50bb; /* Purple */
+            animation-delay: 0.1s;
+        }
+
+        .path-2 {
+            stroke: #61045f; /* Dark purple */
+            animation-delay: 0.2s;
+        }
+
+        .path-3 {
+            stroke: #2b5876; /* Blue */
+            animation-delay: 0.3s;
+        }
+
+        .path-4 {
+            stroke: #4e4376; /* Darker Blue */
+            animation-delay: 0.4s;
+        }
+
+        .path-5 {
+            stroke: #8605d8; /* Brighter purple */
+            animation-delay: 0.5s;
+        }
+
+        .dot-group {
+            opacity: 0;
+            animation: dot-fade-in 0.5s ease-in forwards;
+            animation-delay: 1.5s;
+        }
+
+        /* Keyframe Animations */
+        @keyframes draw-path {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes text-fade-in {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes dot-fade-in {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Custom styles for the dropdown card functionality */
+        .card-details {
+            transition: max-height 0.5s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        .card-details.is-open {
+            max-height: 500px; /* A large value to allow the content to show */
+        }
+        .toggle-btn.is-open svg {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-white">
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div id="splash-logo-container">
+            <!-- SVG Logo recreated with an infinity-like symbol -->
+            <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Looping lines with stroke animation -->
+                <path class="path-stroke path-1" d="M 25 100 C 65 20, 135 180, 175 100" stroke-width='12' stroke-linecap='round'/>
+                <path class="path-stroke path-2" d="M 25 105 C 65 25, 135 185, 175 105" stroke-width='12' stroke-linecap='round'/>
+                <path class="path-stroke path-3" d="M 25 95 C 65 15, 135 175, 175 95" stroke-width='12' stroke-linecap='round'/>
+                <path class="path-stroke path-4" d="M 25 110 C 65 30, 135 190, 175 110" stroke-width='12' stroke-linecap='round'/>
+                <path class="path-stroke path-5" d="M 25 90 C 65 10, 135 170, 175 90" stroke-width='12' stroke-linecap='round'/>
+                
+                <!-- Dots at the ends of the wavy lines -->
+                <g class="dot-group">
+                    <!-- Dots on the left side -->
+                    <circle cx="25" cy="100" r="7" fill="#9d50bb"/>
+                    <circle cx="25" cy="105" r="7" fill="#61045f"/>
+                    <circle cx="25" cy="95" r="7" fill="#2b5876"/>
+                    <circle cx="25" cy="110" r="7" fill="#4e4376"/>
+                    <circle cx="25" cy="90" r="7" fill="#8605d8"/>
+
+                    <!-- Dots on the right side -->
+                    <circle cx="175" cy="100" r="7" fill="#9d50bb"/>
+                    <circle cx="175" cy="105" r="7" fill="#61045f"/>
+                    <circle cx="175" cy="95" r="7" fill="#2b5876"/>
+                    <circle cx="175" cy="110" r="7" fill="#4e4376"/>
+                    <circle cx="175" cy="90" r="7" fill="#8605d8"/>
+                </g>
+            </svg>
+        </div>
+        <div id="splash-logo-text">TOOLZO</div>
+    </div>
+
+    <!-- Header Section (Navigation Bar) -->
+    <header class="sticky top-0 z-50 bg-gray-950/80 backdrop-blur-sm shadow-md py-4 opacity-0">
+        <nav class="container mx-auto px-4 md:px-8 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div id="logo-container" class="w-10 h-10 md:w-12 md:h-12 rounded-full">
+                    <img id="toolzo-logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><path d='M25 100 C 65 20, 135 180, 175 100' stroke-width='12' stroke-linecap='round' stroke='%239d50bb'/><path d='M 25 105 C 65 25, 135 185, 175 105' stroke-width='12' stroke-linecap='round' stroke='%2361045f'/><path d='M 25 95 C 65 15, 135 175, 175 95' stroke-width='12' stroke-linecap='round' stroke='%232b5876'/><path d='M 25 110 C 65 30, 135 190, 175 110' stroke-width='12' stroke-linecap='round' stroke='%234e4376'/><path d='M 25 90 C 65 10, 135 170, 175 90' stroke-width='12' stroke-linecap='round' stroke='%238605d8'/><g><circle cx='25' cy='100' r='7' fill='%239d50bb'/><circle cx='25' cy='105' r='7' fill='%2361045f'/><circle cx='25' cy='95' r='7' fill='%232b5876'/><circle cx='175' cy='100' r='7' fill='%239d50bb'/><circle cx='175' cy='105' r='7' fill='%2361045f'/><circle cx='175' cy='95' r='7' fill='%232b5876'/><circle cx='175' cy='110' r='7' fill='%234e4376'/><circle cx='175' cy='90' r='7' fill='%238605d8'/></g></svg>" alt="TOOLZO Logo" class="w-full h-full object-contain">
+                </div>
+                <span class="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
+                    TOOLZO
+                </span>
+            </div>
+            <!-- Navigation links, updated with "About" link and "Home" instead of "Tools" -->
+            <div class="hidden md:flex space-x-6 text-gray-300">
+                <a href="#hero" id="home-link" class="hover:text-purple-400 transition-colors">Home</a>
+                <a href="#about" id="about-link" class="hover:text-purple-400 transition-colors">About</a>
+                <a href="#" id="contact-link" class="hover:text-purple-400 transition-colors">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Sections -->
+    <main class="opacity-0">
+        <!-- Hero Section -->
+        <section id="hero-section" class="hero-bg py-20 md:py-32 text-center">
+            <div class="container mx-auto px-4 md:px-8">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500 mb-4">
+                    Your All-in-One Toolkit
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                    A centralized platform with all the essential tools your team needs to work smarter, not harder.
+                </p>
+                <button id="get-started-btn" class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium py-3 px-8 rounded-full shadow-lg transform transition-transform duration-200 hover:scale-105">
+                    Get Started
+                </button>
+            </div>
+        </section>
+
+        <!-- Tools Section -->
+        <section id="tools-section" class="py-16 md:py-24 bg-gray-900">
+            <div class="container mx-auto px-4 md:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-purple-400">
+                    Our Featured Tools
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Tool Card 1: ABC Analysis -->
+                    <div class="tool-card bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-700 hover:border-purple-500">
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500 text-white mb-4">
+                            <!-- Placeholder Icon -->
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 14a6 6 0 110-12 6 6 0 010 12zm-1-7H5a1 1 0 110-2h4V5a1 1 0 112 0v4h4a1 1 0 110 2h-4v4a1 1 0 11-2 0v-4z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-100">ABC Analysis</h3>
+                        <p class="text-gray-400 mb-4">
+                            A powerful tool for inventory management and prioritization based on value.
+                        </p>
+                        <a href="#abc-analysis" id="abc-analysis-link" class="inline-block text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                            Learn More &rarr;
+                        </a>
+                    </div>
+
+                    <!-- Tool Card 2: Kraljic Matrix -->
+                    <div class="tool-card bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-700 hover:border-blue-500">
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500 text-white mb-4">
+                            <!-- Placeholder Icon -->
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-8V6h2v4h4v2h-4v4h-2v-4H6v-2h2z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-100">Kraljic Matrix</h3>
+                        <p class="text-gray-400 mb-4">
+                            A strategic tool for categorizing purchased goods based on risk and profit impact.
+                        </p>
+                        <a href="#kraljic-matrix" id="kraljic-matrix-link" class="inline-block text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                            Learn More &rarr;
+                        </a>
+                    </div>
+
+                    <!-- Tool Card 3: Excel Template -->
+                    <div class="tool-card bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-700 hover:border-purple-500">
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500 text-white mb-4">
+                            <!-- Placeholder Icon for Excel -->
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21.25 4.75H2.75A.75.75 0 002 5.5v13a.75.75 0 00.75.75h18.5a.75.75 0 00.75-.75v-13a.75.75 0 00-.75-.75zM20 6.25v2.5h-5.25v-2.5H20zM13.25 6.25v2.5H8v-2.5h5.25zM6.5 6.25v2.5H4v-2.5h2.5zM20 10v2.5h-5.25V10H20zM13.25 10v2.5H8V10h5.25zM6.5 10v2.5H4V10h2.5zM20 13.75v2.5h-5.25v-2.5H20zM13.25 13.75v2.5H8v-2.5h5.25zM6.5 13.75v2.5H4v-2.5h2.5zM20 17.5v2.5h-5.25v-2.5H20zM13.25 17.5v2.5H8v-2.5h5.25zM6.5 17.5v2.5H4v-2.5h2.5z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-100">Excel Template</h3>
+                        <p class="text-gray-400 mb-4">
+                            Download the official Excel template to prepare your data for seamless integration with our analysis tools.
+                        </p>
+                        <a href="#" id="download-template-link" class="inline-block text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                            Download &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Get Started Page -->
+        <section id="get-started-section" class="py-16 md:py-24 bg-gray-900 hidden">
+            <div class="container mx-auto px-4 md:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-purple-400">
+                    How would you like to get started?
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <!-- Card 1: Analyze Single Item -->
+                    <div id="single-item-analysis-card" class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 hover:border-blue-500 cursor-pointer">
+                        <h3 class="text-2xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Analyze single item</h3>
+                        <p class="text-gray-400 text-lg">
+                            Conduct an in-depth, professional analysis of a single item. This method is ideal for detailed evaluation, allowing you to focus on specific data points and generate a comprehensive brief. Perfect for high-value or complex goods.
+                        </p>
+                    </div>
+
+                    <!-- Card 2: Batch analysis via Excel -->
+                    <div id="batch-analysis-card" class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 hover:border-blue-500 cursor-pointer">
+                        <h3 class="text-2xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Batch analysis via Excel</h3>
+                        <p class="text-gray-400 text-lg">
+                            Streamline your workflow by uploading an Excel sheet for bulk processing. This is the most efficient solution for large datasets, enabling you to analyze multiple items simultaneously and receive a comprehensive report in one go.
+                        </p>
+                    </div>
+                </div>
+                <a href="#" id="back-to-home-from-get-started-link" class="mt-12 block text-center text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                    &larr; Back to Home
+                </a>
+            </div>
+        </section>
+
+        <!-- Batch Analysis Page -->
+        <section id="batch-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden">
+            <div class="container mx-auto px-4 md:px-8 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-purple-400">
+                    Upload Your Excel File
+                </h2>
+                <div class="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 max-w-2xl mx-auto">
+                    <p class="text-gray-300 text-lg mb-6">
+                        Please upload an Excel file that matches the <a href="#" id="download-template-link-2" class="text-blue-400 hover:text-blue-300 transition-colors">downloadable template</a>.
+                    </p>
+                    <input type="file" id="excel-file-input" accept=".csv, .xlsx" class="mb-4 block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-purple-50 file:text-purple-700
+                        hover:file:bg-purple-100
+                    "/>
+                     <!-- Sheet selection dropdown - hidden by default -->
+                    <div id="sheet-selection-container" class="hidden mt-4">
+                        <label for="sheet-select" class="text-gray-400 block mb-2">Select Sheet:</label>
+                        <select id="sheet-select" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full mb-4">
+                            <!-- Options will be dynamically added here -->
+                        </select>
+                    </div>
+                    <button id="upload-btn" class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium py-3 px-8 rounded-full shadow-lg transform transition-transform duration-200 hover:scale-105">
+                        Analyze File
+                    </button>
+                    <div id="loading-indicator" class="hidden text-gray-400 mt-4 animate-pulse">Analyzing data...</div>
+                    <div id="error-message" class="hidden text-red-500 mt-4"></div>
+                </div>
+                <a href="#" id="back-to-home-from-batch-link" class="mt-12 block text-center text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                    &larr; Back to Home
+                </a>
+            </div>
+        </section>
+
+        <!-- Single Item Analysis Page -->
+        <section id="single-item-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden">
+            <div class="container mx-auto px-4 md:px-8 text-center">
+                <a href="#" id="back-to-get-started-from-single-link" class="mb-8 block text-center text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                    &larr; Back to Get Started
+                </a>
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-purple-400">
+                    Analyze a Single Item
+                </h2>
+                <div class="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 max-w-2xl mx-auto">
+                    <p class="text-gray-300 text-lg mb-6">
+                        Enter the details of a single item to get its classification based on your total inventory.
+                    </p>
+                    <form id="single-item-form" class="space-y-4 text-left">
+                        <div>
+                            <label for="total-items-count" class="block text-gray-400 text-sm font-semibold mb-2">Total Number of Items</label>
+                            <input type="number" id="total-items-count" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 500">
+                        </div>
+                        <div>
+                            <label for="total-consumption-value" class="block text-gray-400 text-sm font-semibold mb-2">Total Consumption Value of All Items</label>
+                            <input type="number" id="total-consumption-value" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 100000">
+                        </div>
+                        <div>
+                            <label for="order-quantity" class="block text-gray-400 text-sm font-semibold mb-2">Order Quantity</label>
+                            <input type="number" id="order-quantity" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 50">
+                        </div>
+                        <div>
+                            <label for="net-price" class="block text-gray-400 text-sm font-semibold mb-2">Net Price</label>
+                            <input type="number" id="net-price" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 20.00">
+                        </div>
+                        <div>
+                            <label for="annual-consumption-value" class="block text-gray-400 text-sm font-semibold mb-2">Annual Consumption Value (calculated)</label>
+                            <input type="text" id="annual-consumption-value" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600" readonly>
+                        </div>
+                        <div>
+                            <label for="supply-risk" class="block text-gray-400 text-sm font-semibold mb-2">Supply Risk</label>
+                            <select id="supply-risk" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <option value="">Select...</option>
+                                <option value="low">Low</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="value-impact" class="block text-gray-400 text-sm font-semibold mb-2">Value Impact</label>
+                            <select id="value-impact" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <option value="">Select...</option>
+                                <option value="low">Low</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <button type="button" id="categorize-btn" class="w-full mt-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium py-3 px-8 rounded-full shadow-lg transform transition-transform duration-200 hover:scale-105">
+                            Categorize Item
+                        </button>
+                    </form>
+                    <div id="single-item-results" class="mt-8 hidden">
+                        <div class="bg-gray-700 rounded-xl p-6 shadow-md">
+                            <h4 class="text-xl font-bold text-purple-400 mb-4">Analysis Result</h4>
+                            <p class="text-lg text-gray-300 mb-2">
+                                <span class="font-semibold">ABC Class:</span> <span id="abc-result" class="font-bold"></span>
+                            </p>
+                            <p class="text-lg text-gray-300">
+                                <span class="font-semibold">Kraljic Category:</span> <span id="kraljic-result" class="font-bold"></span>
+                            </p>
+                            <div id="single-item-error" class="text-red-400 mt-4 hidden"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analysis Results Page -->
+        <section id="analysis-results-section" class="py-16 md:py-24 bg-gray-900 hidden">
+            <div class="container mx-auto px-4 md:px-8">
+                <!-- Move the back to upload link to the top of the section -->
+                <a href="#" id="back-to-upload-link" class="mb-8 block text-center text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                    &larr; Back to Upload
+                </a>
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-purple-400">
+                    Analysis Results
+                </h2>
+                <!-- Advanced Search and Sort Controls -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 max-w-4xl mx-auto">
+                    <input type="text" id="general-search-input" placeholder="Search by item, supplier, or unit..." class="flex-grow p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                        <button id="create-graph-btn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-full shadow-lg transform transition-transform duration-200 hover:scale-105 w-full sm:w-auto mt-4 sm:mt-0">
+                            Create Graph
+                        </button>
+                        <select id="sort-select" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="name-asc">Name (A-Z)</option>
+                            <option value="name-desc">Name (Z-A)</option>
+                            <option value="supplier-asc">Supplier (A-Z)</option>
+                            <option value="supplier-desc">Supplier (Z-A)</option>
+                            <option value="date-asc">Date (Oldest)</option>
+                            <option value="date-desc">Date (Newest)</option>
+                            <option value="value-desc">Value (High to Low)</option>
+                            <option value="value-asc">Value (Low to High)</option>
+                            <option value="abc-asc">ABC Class (A-C)</option>
+                            <option value="abc-desc">ABC Class (C-A)</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Date Range Filter and Supplier Filter -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 max-w-4xl mx-auto">
+                    <div class="flex items-center gap-2 w-full sm:w-1/2">
+                        <span class="text-gray-400 whitespace-nowrap">From:</span>
+                        <input type="date" id="start-date-input" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full">
+                    </div>
+                    <div class="flex items-center gap-2 w-full sm:w-1/2">
+                        <span class="text-gray-400 whitespace-nowrap">To:</span>
+                        <input type="date" id="end-date-input" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full">
+                    </div>
+                    <select id="supplier-select" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full sm:w-1/2">
+                        <option value="">All Suppliers</option>
+                    </select>
+                </div>
+                <!-- New Category Filters -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 max-w-4xl mx-auto">
+                    <select id="abc-class-select" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full sm:w-1/2">
+                        <option value="">All ABC Classes</option>
+                        <option value="A">Class A</option>
+                        <option value="B">Class B</option>
+                        <option value="C">Class C</option>
+                    </select>
+                    <select id="kraljic-category-select" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full sm:w-1/2">
+                        <option value="">All Kraljic Categories</option>
+                        <option value="Strategic">Strategic</option>
+                        <option value="Leverage">Leverage</option>
+                        <option value="Bottleneck">Bottleneck</option>
+                        <option value="Non-Critical">Non-Critical</option>
+                    </select>
+                </div>
+                <!-- Item count -->
+                <div id="item-count" class="text-center text-sm text-gray-400 mb-4"></div>
+                <!-- Results container - changed to md:grid-cols-2 for tablet support -->
+                <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                    <!-- Cards will be dynamically inserted here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Analysis Graph Section -->
+        <section id="analysis-graph-section" class="py-16 md:py-24 bg-gray-900 hidden">
+            <div class="container mx-auto px-4 md:px-8 text-center">
+                <a href="#" id="back-to-results-link" class="mb-8 block text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                    &larr; Back to Results
+                </a>
+                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-purple-400">
+                    Visual Analysis
+                </h2>
+                <!-- Graph containers - changed to md:grid-cols-2 for tablet support -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                    <div id="abc-graph-container" class="bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-700">
+                        <h3 class="text-xl font-semibold text-gray-100 mb-4">ABC Class Distribution</h3>
+                        <div id="abc-graph"></div>
+                    </div>
+                    <div id="kraljic-graph-container" class="bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-700">
+                        <h3 class="text-xl font-semibold text-gray-100 mb-4">Kraljic Matrix Distribution</h3>
+                        <div id="kraljic-graph"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section - Added -->
+        <section id="about-section" class="py-16 md:py-24 bg-gray-900 hidden">
+            <div class="container mx-auto px-4 md:px-8 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-purple-400">
+                    About This Tool
+                </h2>
+                <div class="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 max-w-2xl mx-auto">
+                    <p class="text-gray-300 text-lg mb-6 leading-relaxed">
+                        This tool was professionally developed as part of a collaborative project to assist with the categorization of the Kraljic Matrix and ABC categories.
+                    </p>
+                    <p class="text-gray-300 text-lg mb-6 leading-relaxed">
+                        The project was led by the talented developers, <span class="text-purple-400 font-bold">Ibrahim Elhusseiny</span> and <span class="text-purple-400 font-bold">Farida Salama</span>. Their work was meticulously supervised by <span class="text-blue-400 font-bold">Dr. Galaluddin Shahin</span>.
+                    </p>
+                    <p class="text-gray-300 text-lg">
+                        The TOOLZO platform is designed to provide robust and intuitive solutions for complex business challenges.
+                    </p>
+                    <a href="#" id="back-to-home-link" class="mt-8 inline-block text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                        &larr; Back to Home
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section - Updated -->
+        <section id="contact-section" class="py-16 md:py-24 bg-gray-900 hidden">
+            <div class="container mx-auto px-4 md:px-8 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-purple-400">
+                    Contact Our Team
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <!-- Team Member 1 -->
+                    <div class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
+                        <!-- Updated image source to use a reliable placeholder -->
+                        <img src="https://placehold.co/128x128/9d50bb/ffffff?text=IE" onerror="this.src='https://placehold.co/128x128/9d50bb/ffffff?text=IE'" alt="Ibrahim Elhusseiny" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
+                        <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Ibrahim Elhusseiny</h3>
+                        <p class="text-gray-400 text-sm mb-4">Ibrahimelhusseiny@gmail.com</p>
+                        <p class="text-gray-300 text-md">
+                            A highly skilled developer who led the front-end implementation and user interface design of the platform.
+                        </p>
+                    </div>
+
+                    <!-- Team Member 2 -->
+                    <div class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
+                        <!-- Updated image source to use a reliable placeholder -->
+                        <img src="https://placehold.co/128x128/61045f/ffffff?text=FS" onerror="this.src='https://placehold.co/128x128/61045f/ffffff?text=FS'" alt="Farida Salama" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
+                        <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Farida Salama</h3>
+                        <p class="text-gray-400 text-sm mb-4">Salamaahmedfarida@gmail.com</p>
+                        <p class="text-gray-300 text-md">
+                            A dedicated developer specializing in back-end logic and data processing, ensuring the tool's core functions are robust and efficient.
+                        </p>
+                    </div>
+
+                    <!-- Team Member 3 -->
+                    <div class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
+                        <!-- Updated image source to use a reliable placeholder -->
+                        <img src="https://placehold.co/128x128/2b5876/ffffff?text=GS" onerror="this.src='https://placehold.co/128x128/2b5876/ffffff?text=GS'" alt="Galaluddin Shahin" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
+                        <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Galaluddin Shahin</h3>
+                        <p class="text-gray-400 text-sm mb-4">GalaluddinShahin@gmail.com</p>
+                        <p class="text-gray-300 text-md">
+                            The project supervisor, who provided expert guidance and oversight throughout the development lifecycle to ensure high-quality standards.
+                        </p>
+                    </div>
+                </div>
+                <a href="#" id="back-to-home-from-contact-link" class="mt-12 block text-center text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                    &larr; Back to Home
+                </a>
+            </div>
+        </section>
+
+        <!-- ABC Analysis Section - Added -->
+        <section id="abc-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden">
+            <div class="container mx-auto px-4 md:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-purple-400">
+                    What is ABC Analysis?
+                </h2>
+                <div class="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 max-w-3xl mx-auto">
+                    <p class="text-gray-300 text-lg mb-6 leading-relaxed">
+                        ABC Analysis is a method for <span class="font-bold">inventory management</span> that divides items into three categories (<span class="font-bold">A, B, and C</span>) based on their value to the company. The principle is that not all inventory items are of equal importance.
+                    </p>
+                    <ul class="text-gray-300 text-lg space-y-4 mb-6 leading-relaxed">
+                        <li>
+                            <span class="text-[#22C55E] font-bold">Class A:</span> These are the most important items, accounting for a small percentage of total items (about 10-20%) but representing the largest portion of total value (about 70-80%). These items require close control and frequent monitoring.
+                        </li>
+                        <li>
+                            <span class="text-[#3B82F6] font-bold">Class B:</span> These items are of medium importance. They typically account for about 30% of total items and 15% of total value. They require moderate control and less frequent monitoring than Class A items.
+                        </li>
+                        <li>
+                            <span class="text-[#F59E0B] font-bold">Class C:</span> These are the least important items. They make up a large percentage of total items (about 50-60%) but only a small portion of the total value (about 5-10%). These can be managed with simpler control systems.
+                        </li>
+                    </ul>
+                    <div class="flex justify-center my-8">
+                       <!-- SVG Chart for ABC Analysis -->
+                       <svg class="w-full max-w-lg" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                           <!-- Background and Gridlines -->
+                           <rect width="100%" height="100%" fill="#1E1E2D" rx="10" ry="10"/>
+                           <line x1="100" y1="50" x2="100" y2="350" stroke="#4B5563" stroke-width="2" />
+                           <line x1="100" y1="350" x2="550" y2="350" stroke="#4B5563" stroke-width="2" />
+                           
+                           <!-- Labels -->
+                           <text x="50" y="45" font-family="Inter, sans-serif" font-size="20" fill="#9CA3AF" text-anchor="end" transform="rotate(-90 50,45)">Total Value (%)</text>
+                           <text x="325" y="380" font-family="Inter, sans-serif" font-size="20" fill="#9CA3AF" text-anchor="middle">Number of Items (%)</text>
+                           
+                           <!-- Category A -->
+                           <rect x="100" y="100" width="100" height="250" fill="#22C55E" />
+                           <text x="150" y="90" font-family="Inter, sans-serif" font-size="18" font-weight="bold" fill="#BBF7D0" text-anchor="middle">Class A</text>
+                           <text x="150" y="120" font-family="Inter, sans-serif" font-size="16" fill="#BBF7D0" text-anchor="middle">70-80% Value</text>
+                           <text x="150" y="140" font-family="Inter, sans-serif" font-size="16" fill="#BBF7D0" text-anchor="middle">10-20% Items</text>
+
+                           <!-- Category B -->
+                           <rect x="250" y="250" width="100" height="100" fill="#3B82F6" />
+                           <text x="300" y="240" font-family="Inter, sans-serif" font-size="18" font-weight="bold" fill="#93C5FD" text-anchor="middle">Class B</text>
+                           <text x="300" y="270" font-family="Inter, sans-serif" font-size="16" fill="#93C5FD" text-anchor="middle">15% Value</text>
+                           <text x="300" y="290" font-family="Inter, sans-serif" font-size="16" fill="#93C5FD" text-anchor="middle">30% Items</text>
+
+                           <!-- Category C -->
+                           <rect x="400" y="325" width="100" height="25" fill="#F59E0B" />
+                           <text x="450" y="315" font-family="Inter, sans-serif" font-size="18" font-weight="bold" fill="#FDBA74" text-anchor="middle">Class C</text>
+                           <text x="450" y="345" font-family="Inter, sans-serif" font-size="16" fill="#FDBA74" text-anchor="middle">5-10% Value</text>
+                           <text x="450" y="365" font-family="Inter, sans-serif" font-size="16" fill="#FDBA74" text-anchor="middle">50-60% Items</text>
+                       </svg>
+                    </div>
+                    <a href="#" id="back-to-home-from-abc-link" class="mt-8 inline-block text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                        &larr; Back to Home
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kraljic Matrix Section - Added -->
+        <section id="kraljic-matrix-section" class="py-16 md:py-24 bg-gray-900 hidden">
+            <div class="container mx-auto px-4 md:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-purple-400">
+                    Understanding the Kraljic Matrix
+                </h2>
+                <div class="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 max-w-4xl mx-auto">
+                    <p class="text-gray-300 text-lg mb-6 leading-relaxed">
+                        The <span class="font-bold">Kraljic Matrix</span> is a powerful tool for <span class="font-bold">strategic procurement</span>. It classifies a company's purchased goods and services based on two key dimensions: <span class="font-bold">Profit Impact</span> and <span class="font-bold">Supply Risk</span>. This helps businesses develop appropriate purchasing strategies for different items.
+                    </p>
+                    <div class="flex flex-col md:flex-row items-center justify-center space-y-8 md:space-y-0 md:space-x-8">
+                        <!-- SVG for Kraljic Matrix -->
+                        <div class="flex-1 w-full max-w-md">
+                            <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Background -->
+                                <rect width="100%" height="100%" fill="#1E1E2D" rx="10" ry="10" />
+
+                                <!-- Main Axis Lines -->
+                                <line x1="100" y1="500" x2="500" y2="500" stroke="#4B5563" stroke-width="3" />
+                                <line x1="100" y1="100" x2="100" y2="500" stroke="#4B5563" stroke-width="3" />
+
+                                <!-- Quadrant Lines -->
+                                <line x1="300" y1="100" x2="300" y2="500" stroke="#4B5563" stroke-dasharray="10 5" />
+                                <line x1="100" y1="300" x2="500" y2="300" stroke="#4B5563" stroke-dasharray="10 5" />
+
+                                <!-- Quadrant Labels -->
+                                <text x="200" y="200" font-family="Inter, sans-serif" font-size="24" font-weight="bold" fill="#60A5FA" text-anchor="middle">Leverage</text>
+                                <text x="400" y="200" font-family="Inter, sans-serif" font-size="24" font-weight="bold" fill="#FBBF24" text-anchor="middle">Strategic</text>
+                                <text x="200" y="400" font-family="Inter, sans-serif" font-size="24" font-weight="bold" fill="#A855F7" text-anchor="middle">Non-Critical</text>
+                                <text x="400" y="400" font-family="Inter, sans-serif" font-size="24" font-weight="bold" fill="#EC4899" text-anchor="middle">Bottleneck</text>
+
+                                <!-- Axis Labels -->
+                                <text x="300" y="550" font-family="Inter, sans-serif" font-size="20" fill="#9CA3AF" text-anchor="middle">Supply Risk</text>
+                                <text x="50" y="300" font-family="Inter, sans-serif" font-size="20" fill="#9CA3AF" text-anchor="end" transform="rotate(-90 50,300)">Profit Impact</text>
+                                
+                                <!-- Risk labels on x-axis -->
+                                <text x="200" y="525" font-family="Inter, sans-serif" font-size="16" fill="#9CA3AF" text-anchor="middle">Low</text>
+                                <text x="400" y="525" font-family="Inter, sans-serif" font-size="16" fill="#9CA3AF" text-anchor="middle">High</text>
+
+                                <!-- Profit Impact labels on y-axis -->
+                                <text x="90" y="200" font-family="Inter, sans-serif" font-size="16" fill="#9CA3AF" text-anchor="end">High</text>
+                                <text x="90" y="400" font-family="Inter, sans-serif" font-size="16" fill="#9CA3AF" text-anchor="end">Low</text>
+
+                            </svg>
+                        </div>
+
+                        <div class="flex-1 w-full text-left">
+                            <h3 class="text-xl md:text-2xl font-bold mb-4 text-purple-400">The Four Quadrants:</h3>
+                            <ul class="text-gray-300 text-lg space-y-4 leading-relaxed">
+                                <li>
+                                    <span class="text-[#60A5FA] font-bold">Leverage Items:</span> High profit impact, low supply risk. The goal here is to maximize profit by using your purchasing power to get the best deals.
+                                </li>
+                                <li>
+                                    <span class="text-[#FBBF24] font-bold">Strategic Items:</span> High profit impact, high supply risk. These are critical to the business and require close partnerships with suppliers.
+                                </li>
+                                <li>
+                                    <span class="text-[#A855F7] font-bold">Non-Critical Items:</span> Low profit impact, low supply risk. These are simple items with a focus on efficient, automated ordering.
+                                </li>
+                                <li>
+                                    <span class="text-[#EC4899] font-bold">Bottleneck Items:</span> Low profit impact, high supply risk. These items can be difficult to manage and require creative solutions to ensure a stable supply.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <a href="#" id="back-to-home-from-kraljic-link" class="mt-8 inline-block text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                        &larr; Back to Home
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-950 py-8 text-center text-gray-500 opacity-0">
+        <div class="container mx-auto px-4 md:px-8">
+            <p>&copy; 2025 TOOLZO. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get the splash screen and main content elements
+        const splashScreen = document.getElementById('splash-screen');
+        const mainContentElements = document.querySelectorAll('header, main, footer');
+        const heroSection = document.getElementById('hero-section');
+        const toolsSection = document.getElementById('tools-section');
+        const aboutSection = document.getElementById('about-section');
+        const contactSection = document.getElementById('contact-section');
+        const abcAnalysisSection = document.getElementById('abc-analysis-section');
+        const kraljicMatrixSection = document.getElementById('kraljic-matrix-section');
+        const getStartedSection = document.getElementById('get-started-section');
+        const batchAnalysisSection = document.getElementById('batch-analysis-section');
+        const singleItemAnalysisSection = document.getElementById('single-item-analysis-section');
+        const analysisResultsSection = document.getElementById('analysis-results-section');
+        const analysisGraphSection = document.getElementById('analysis-graph-section');
+        
+        // Navigation links
+        const aboutLink = document.getElementById('about-link');
+        const contactLink = document.getElementById('contact-link');
+        const homeLink = document.getElementById('home-link');
+        const backToHomeLinkAbout = document.getElementById('back-to-home-link');
+        const backToHomeLinkContact = document.getElementById('back-to-home-from-contact-link');
+        const abcAnalysisLink = document.getElementById('abc-analysis-link');
+        const backToHomeLinkABC = document.getElementById('back-to-home-from-abc-link');
+        const kraljicMatrixLink = document.getElementById('kraljic-matrix-link');
+        const backToHomeLinkKraljic = document.getElementById('back-to-home-from-kraljic-link');
+        const downloadTemplateLink = document.getElementById('download-template-link');
+        const getStartedBtn = document.getElementById('get-started-btn');
+        const batchAnalysisCard = document.getElementById('batch-analysis-card');
+        const singleItemAnalysisCard = document.getElementById('single-item-analysis-card');
+        const backToHomeFromGetStartedLink = document.getElementById('back-to-home-from-get-started-link');
+        const backToHomeFromBatchLink = document.getElementById('back-to-home-from-batch-link');
+        const backToUploadLink = document.getElementById('back-to-upload-link');
+        const downloadTemplateLink2 = document.getElementById('download-template-link-2');
+        const backToGetStartedFromSingleLink = document.getElementById('back-to-get-started-from-single-link');
+
+
+        // Batch analysis elements
+        const excelFileInput = document.getElementById('excel-file-input');
+        const uploadBtn = document.getElementById('upload-btn');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const errorMessage = document.getElementById('error-message');
+        const resultsContainer = document.getElementById('results-container');
+        const generalSearchInput = document.getElementById('general-search-input');
+        const sortSelect = document.getElementById('sort-select');
+        const startDateInput = document.getElementById('start-date-input');
+        const endDateInput = document.getElementById('end-date-input');
+        const supplierSelect = document.getElementById('supplier-select');
+        const abcClassSelect = document.getElementById('abc-class-select');
+        const kraljicCategorySelect = document.getElementById('kraljic-category-select');
+        const itemCount = document.getElementById('item-count');
+        const sheetSelectionContainer = document.getElementById('sheet-selection-container');
+        const sheetSelect = document.getElementById('sheet-select');
+        const createGraphBtn = document.getElementById('create-graph-btn');
+        const backToResultsLink = document.getElementById('back-to-results-link');
+        const abcGraphContainer = document.getElementById('abc-graph');
+        const kraljicGraphContainer = document.getElementById('kraljic-graph');
+
+        let rawData = [];
+        let allSuppliers = new Set();
+        let allDates = [];
+        let analyzedData = []; 
+        let workbook = null; // To store the workbook for multi-sheet selection
+
+        // Single item analysis elements
+        const totalItemsCountInput = document.getElementById('total-items-count');
+        const totalConsumptionValueInput = document.getElementById('total-consumption-value');
+        const orderQuantityInput = document.getElementById('order-quantity');
+        const netPriceInput = document.getElementById('net-price');
+        const annualConsumptionValueInput = document.getElementById('annual-consumption-value');
+        const supplyRiskSelect = document.getElementById('supply-risk');
+        const valueImpactSelect = document.getElementById('value-impact');
+        const categorizeBtn = document.getElementById('categorize-btn');
+        const singleItemResultsDiv = document.getElementById('single-item-results');
+        const abcResultSpan = document.getElementById('abc-result');
+        const kraljicResultSpan = document.getElementById('kraljic-result');
+        const singleItemErrorDiv = document.getElementById('single-item-error');
+
+
+        // The CSV data to be downloaded
+        const csvData = `itemName,Document Date,Order Quantity,Order Unit,Net Price,annualConsumptionValue,Name of Supplier,supplyRisk,valueImpact
+,,,,,=C2*E2,,,`;
+
+        // Function to hide all main sections
+        function hideAllSections() {
+            heroSection.classList.add('hidden');
+            toolsSection.classList.add('hidden');
+            aboutSection.classList.add('hidden');
+            contactSection.classList.add('hidden');
+            abcAnalysisSection.classList.add('hidden');
+            kraljicMatrixSection.classList.add('hidden');
+            getStartedSection.classList.add('hidden');
+            batchAnalysisSection.classList.add('hidden');
+            singleItemAnalysisSection.classList.add('hidden');
+            analysisResultsSection.classList.add('hidden');
+            analysisGraphSection.classList.add('hidden');
+        }
+
+        // Function to show the hero and tools sections
+        function showHomeSections() {
+            hideAllSections();
+            heroSection.classList.remove('hidden');
+            toolsSection.classList.remove('hidden');
+        }
+        
+        function showGetStartedSection() {
+            hideAllSections();
+            getStartedSection.classList.remove('hidden');
+        }
+        
+        function showContactSection() {
+            hideAllSections();
+            contactSection.classList.remove('hidden');
+        }
+
+        // Function to hide the splash screen and show the main content
+        function showMainContent() {
+            splashScreen.classList.add('hidden');
+            mainContentElements.forEach(element => {
+                element.style.transition = 'opacity 1s ease-in';
+                element.style.opacity = '1';
+            });
+        }
+
+        // Function to handle the file download
+        function downloadFile(data, filename, type) {
+            const blob = new Blob([data], { type: type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Function to filter the raw data based on current UI state
+        function filterData() {
+            const searchTerm = generalSearchInput.value.toLowerCase();
+            const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+            const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+            
+            return rawData.filter(item => {
+                const itemDate = item['Document Date'] ? new Date(item['Document Date']) : null;
+
+                // Check date range
+                const isAfterStart = !startDate || (itemDate && itemDate >= startDate);
+                const isBeforeEnd = !endDate || (itemDate && itemDate <= endDate);
+                const datesMatch = isAfterStart && isBeforeEnd;
+                
+                // Check general search term against multiple fields
+                const searchMatch = (item.itemName || '').toLowerCase().includes(searchTerm) ||
+                                    (item['Name of Supplier'] || '').toLowerCase().includes(searchTerm) ||
+                                    (item['Order Unit'] || '').toLowerCase().includes(searchTerm);
+                                    
+                return datesMatch && searchMatch;
+            });
+        }
+
+        // Function to perform analysis and store results
+        function performAnalysis(data) {
+            // Consolidate filtered data by itemName
+            const consolidatedData = data.reduce((acc, item) => {
+                // Ignore rows without an item name
+                if (!item.itemName) {
+                    return acc;
+                }
+                const existingItem = acc[item.itemName];
+                const cleanedValue = String(item.annualConsumptionValue || '').replace(/,/g, '');
+                
+                if (existingItem) {
+                    existingItem.annualConsumptionValue += parseFloat(cleanedValue || 0);
+                    const itemDate = item['Document Date'] ? new Date(item['Document Date']) : null;
+                    if (item['Name of Supplier']) existingItem.suppliers.add(item['Name of Supplier']);
+                    if (itemDate && !isNaN(itemDate)) existingItem.dates.add(itemDate.toISOString().split('T')[0]);
+                } else {
+                    acc[item.itemName] = { 
+                        ...item,
+                        annualConsumptionValue: parseFloat(cleanedValue || 0),
+                        suppliers: item['Name of Supplier'] ? new Set([item['Name of Supplier']]) : new Set(),
+                        dates: item['Document Date'] ? new Set([new Date(item['Document Date']).toISOString().split('T')[0]]) : new Set()
+                    };
+                }
+                return acc;
+            }, {});
+
+            const tempAnalyzedData = Object.values(consolidatedData);
+            const totalValue = tempAnalyzedData.reduce((sum, item) => sum + item.annualConsumptionValue, 0);
+
+            // ABC Analysis
+            tempAnalyzedData.sort((a, b) => b.annualConsumptionValue - a.annualConsumptionValue);
+            let cumulativeValue = 0;
+            tempAnalyzedData.forEach(item => {
+                cumulativeValue += item.annualConsumptionValue;
+                const cumulativePercentage = (cumulativeValue / totalValue) * 100;
+                if (cumulativePercentage <= 80) {
+                    item.abcClass = 'A';
+                } else if (cumulativePercentage <= 95) {
+                    item.abcClass = 'B';
+                } else {
+                    item.abcClass = 'C';
+                }
+            });
+
+            // Kraljic Matrix Analysis
+            tempAnalyzedData.forEach(item => {
+                const supplyRisk = (item.supplyRisk || '').toLowerCase().trim();
+                const valueImpact = (item.valueImpact || '').toLowerCase().trim();
+                if (supplyRisk === 'low' && valueImpact === 'low') {
+                    item.kraljicClass = 'Non-Critical';
+                } else if (supplyRisk === 'low' && valueImpact === 'high') {
+                    item.kraljicClass = 'Leverage';
+                } else if (supplyRisk === 'high' && valueImpact === 'low') {
+                    item.kraljicClass = 'Bottleneck';
+                } else if (supplyRisk === 'high' && valueImpact === 'high') {
+                    item.kraljicClass = 'Strategic';
+                } else {
+                    item.kraljicClass = 'N/A';
+                }
+            });
+            analyzedData = tempAnalyzedData;
+        }
+        
+        // Function to display the results based on current filters
+        function displayResults() {
+            resultsContainer.innerHTML = ''; // Clear previous results
+            
+            const selectedSupplier = supplierSelect.value;
+            const selectedABCClass = abcClassSelect.value;
+            const selectedKraljicCategory = kraljicCategorySelect.value;
+            const searchTerm = generalSearchInput.value.toLowerCase();
+
+            let itemsToDisplay = analyzedData;
+
+            // Apply all filters for display
+            itemsToDisplay = itemsToDisplay.filter(item => {
+                const supplierMatch = !selectedSupplier || item.suppliers.has(selectedSupplier);
+                const abcMatch = !selectedABCClass || item.abcClass === selectedABCClass;
+                const kraljicMatch = !selectedKraljicCategory || item.kraljicClass === selectedKraljicCategory;
+
+                // General search term checks all relevant fields
+                const searchMatch = (item.itemName || '').toLowerCase().includes(searchTerm) ||
+                                    (Array.from(item.suppliers).join(', ') || '').toLowerCase().includes(searchTerm) ||
+                                    (item['Order Unit'] || '').toLowerCase().includes(searchTerm);
+
+                return supplierMatch && abcMatch && kraljicMatch && searchMatch;
+            });
+            
+            // Apply sorting logic to the items to be displayed
+            const sortBy = sortSelect.value;
+            switch (sortBy) {
+                case 'name-asc':
+                    itemsToDisplay.sort((a, b) => (a.itemName || '').localeCompare(b.itemName || ''));
+                    break;
+                case 'name-desc':
+                    itemsToDisplay.sort((a, b) => (b.itemName || '').localeCompare(a.itemName || ''));
+                    break;
+                case 'supplier-asc':
+                    itemsToDisplay.sort((a, b) => (Array.from(a.suppliers).sort()[0] || '').localeCompare(Array.from(b.suppliers).sort()[0] || ''));
+                    break;
+                case 'supplier-desc':
+                    itemsToDisplay.sort((a, b) => (Array.from(b.suppliers).sort()[0] || '').localeCompare(Array.from(a.suppliers).sort()[0] || ''));
+                    break;
+                case 'date-asc':
+                    itemsToDisplay.sort((a, b) => new Date(Array.from(a.dates).sort()[0]) - new Date(Array.from(b.dates).sort()[0]));
+                    break;
+                case 'date-desc':
+                    itemsToDisplay.sort((a, b) => new Date(Array.from(b.dates).sort()[0]) - new Date(Array.from(a.dates).sort()[0]));
+                    break;
+                case 'value-asc':
+                    itemsToDisplay.sort((a, b) => a.annualConsumptionValue - b.annualConsumptionValue);
+                    break;
+                case 'value-desc':
+                    itemsToDisplay.sort((a, b) => b.annualConsumptionValue - a.annualConsumptionValue);
+                    break;
+                case 'abc-asc':
+                    const abcOrderAsc = {'A': 1, 'B': 2, 'C': 3};
+                    itemsToDisplay.sort((a, b) => abcOrderAsc[a.abcClass] - abcOrderAsc[b.abcClass]);
+                    break;
+                case 'abc-desc':
+                    const abcOrderDesc = {'A': 1, 'B': 2, 'C': 3};
+                    itemsToDisplay.sort((a, b) => abcOrderDesc[b.abcClass] - abcOrderDesc[a.abcClass]);
+                    break;
+            }
+            
+            itemCount.textContent = `Showing ${itemsToDisplay.length} unique items.`;
+
+            if (itemsToDisplay.length === 0) {
+                 resultsContainer.innerHTML = '<p class="text-center text-gray-500 col-span-full">No results found with the current filters.</p>';
+                 return;
+            }
+
+            itemsToDisplay.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'tool-card bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-700 hover:border-blue-500 cursor-pointer overflow-hidden';
+                
+                let abcColor = 'text-gray-400';
+                if (item.abcClass === 'A') abcColor = 'text-green-400';
+                else if (item.abcClass === 'B') abcColor = 'text-yellow-400';
+                else if (item.abcClass === 'C') abcColor = 'text-red-400';
+
+                let kraljicColor = 'text-gray-400';
+                if (item.kraljicClass === 'Strategic') kraljicColor = 'text-purple-400';
+                else if (item.kraljicClass === 'Leverage') kraljicColor = 'text-blue-400';
+                else if (item.kraljicClass === 'Bottleneck') kraljicColor = 'text-red-400';
+                else if (item.kraljicClass === 'Non-Critical') kraljicColor = 'text-green-400';
+
+                // Format the number with commas
+                const formattedValue = new Intl.NumberFormat('en-US').format(item.annualConsumptionValue.toFixed(2));
+                const suppliersList = Array.from(item.suppliers).join(', ') || 'N/A';
+                const datesList = Array.from(item.dates).sort().join(', ');
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500 truncate">${item.itemName}</h3>
+                        <div class="toggle-btn transition-transform duration-300 ease-in-out text-gray-400 hover:text-white ml-4 focus:outline-none">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-400">
+                        <p><strong>ABC Class:</strong> <span class="${abcColor}">${item.abcClass}</span></p>
+                        <p><strong>Kraljic Category:</strong> <span class="${kraljicColor}">${item.kraljicClass}</span></p>
+                    </div>
+                    <div class="card-details mt-4">
+                        <hr class="border-gray-700 my-4">
+                        <h4 class="font-bold text-gray-200 mb-2">Detailed Analysis</h4>
+                        <p class="text-gray-300 text-sm mb-2">
+                            <span class="font-semibold">Total Value:</span> $${formattedValue}
+                        </p>
+                        <p class="text-gray-300 text-sm mb-2">
+                            <span class="font-semibold">Suppliers:</span> ${suppliersList}
+                        </p>
+                         <p class="text-gray-300 text-sm mb-2">
+                            <span class="font-semibold">Original supply risk:</span> ${item.supplyRisk}
+                        </p>
+                         <p class="text-gray-300 text-sm mb-2">
+                            <span class="font-semibold">Original value impact:</span> ${item.valueImpact}
+                        </p>
+                         <p class="text-gray-300 text-sm mb-2">
+                            <span class="font-semibold">Analysis Date(s):</span> ${datesList}
+                        </p>
+                        
+                        <p class="text-gray-300 text-sm mt-4">
+                            <strong>Summary:</strong> Based on the ABC Analysis, this item is a <span class="${abcColor}">${item.abcClass}</span> product, indicating its importance to the overall value of your inventory. According to the Kraljic Matrix, it falls under the <span class="${kraljicColor}">${item.kraljicClass}</span> category, which suggests a strategic approach is needed based on its profit impact and supply risk.
+                        </p>
+                    </div>
+                `;
+                resultsContainer.appendChild(card);
+            });
+            
+            // Add toggle functionality to new cards
+            document.querySelectorAll('.tool-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const details = card.querySelector('.card-details');
+                    const toggleBtn = card.querySelector('.toggle-btn');
+                    if (details && toggleBtn) {
+                        details.classList.toggle('is-open');
+                        toggleBtn.classList.toggle('is-open');
+                    }
+                });
+            });
+        }
+        
+        // Main function to trigger filtering and rendering
+        function renderResults() {
+            // Re-analyze data only if a date or general search term changes
+            performAnalysis(filterData());
+            // Then, display the results based on all filters
+            displayResults();
+        }
+
+        // --- Core File Processing Logic ---
+        function processFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        if (file.name.endsWith('.xlsx')) {
+                            const binaryStr = e.target.result;
+                            workbook = XLSX.read(binaryStr, { type: 'binary' });
+                            const sheetNames = workbook.SheetNames;
+                            
+                            // Check for multiple sheets and show the selector
+                            if (sheetNames.length > 1) {
+                                sheetSelect.innerHTML = sheetNames.map(name => `<option value="${name}">${name}</option>`).join('');
+                                sheetSelectionContainer.classList.remove('hidden');
+                            } else {
+                                sheetSelectionContainer.classList.add('hidden');
+                            }
+                            
+                            // Resolve the promise, but don't proceed to analysis yet
+                            resolve(workbook);
+                            
+                        } else if (file.name.endsWith('.csv')) {
+                            sheetSelectionContainer.classList.add('hidden');
+                            Papa.parse(e.target.result, {
+                                header: true,
+                                dynamicTyping: true,
+                                complete: function(results) {
+                                    resolve(results.data);
+                                },
+                                error: function(err, file) {
+                                    reject(err);
+                                }
+                            });
+                            return; // Exit early for PapaParse
+                        } else {
+                            reject(new Error("Unsupported file type. Please upload a .csv or .xlsx file."));
+                        }
+                    } catch (e) {
+                        reject(e);
+                    }
+                };
+                reader.onerror = reject;
+
+                if (file.name.endsWith('.xlsx')) {
+                    reader.readAsBinaryString(file);
+                } else {
+                    reader.readAsText(file);
+                }
+            });
+        }
+
+        function processSheet(sheetName) {
+            if (!workbook) return; // Cannot process without a workbook
+            const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: false, defval: null});
+            if (data.length > 0) {
+                rawData = data;
+                allSuppliers.clear();
+                allDates = [];
+                rawData.forEach(item => {
+                    if (item['Name of Supplier']) allSuppliers.add(item['Name of Supplier']);
+                    const itemDate = item['Document Date'] ? new Date(item['Document Date']) : null;
+                    if (itemDate && !isNaN(itemDate)) allDates.push(itemDate);
+                });
+                const sortedSuppliers = Array.from(allSuppliers).sort();
+                supplierSelect.innerHTML = '<option value="">All Suppliers</option>';
+                sortedSuppliers.forEach(supplier => {
+                    const option = document.createElement('option');
+                    option.value = supplier;
+                    option.textContent = supplier;
+                    supplierSelect.appendChild(option);
+                });
+                if (allDates.length > 0) {
+                    const minDate = new Date(Math.min(...allDates));
+                    const maxDate = new Date(Math.max(...allDates));
+                    startDateInput.value = minDate.toISOString().split('T')[0];
+                    endDateInput.value = maxDate.toISOString().split('T')[0];
+                }
+                
+                renderResults();
+                hideAllSections();
+                analysisResultsSection.classList.remove('hidden');
+            } else {
+                errorMessage.textContent = "Could not parse data from the selected sheet. Please check the sheet format.";
+                errorMessage.classList.remove('hidden');
+            }
+        }
+        // --- End Core File Processing Logic ---
+        
+        // --- Graphing Logic ---
+        function createBarChart(containerId, data, barColors) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; // Clear previous graph
+            if (Object.keys(data).length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-500">No data available for this chart with the current filters.</p>`;
+                return;
+            }
+
+            const width = 500;
+            const height = 300;
+            const margin = { top: 20, right: 20, bottom: 50, left: 100 }; // Increased left margin
+            const svgWidth = width + margin.left + margin.right;
+            const svgHeight = height + margin.top + margin.bottom;
+
+            const maxCount = Math.max(...Object.values(data));
+            const xScale = (count) => (count / maxCount) * width;
+            const yScale = (index) => (index * height) / Object.keys(data).length;
+            const barHeight = height / Object.keys(data).length - 10;
+            const categories = Object.keys(data);
+            const counts = Object.values(data);
+
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            svg.setAttribute('viewBox', `0 0 ${svgWidth} ${svgHeight}`);
+            svg.style.backgroundColor = 'transparent';
+            
+            // X-axis and labels (horizontal)
+            const xAxisY = height + margin.top;
+            const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            xAxis.setAttribute('x1', margin.left);
+            xAxis.setAttribute('y1', xAxisY);
+            xAxis.setAttribute('x2', width + margin.left);
+            xAxis.setAttribute('y2', xAxisY);
+            xAxis.setAttribute('stroke', '#4B5563');
+            svg.appendChild(xAxis);
+            
+            // Y-axis labels (vertical)
+            categories.forEach((category, i) => {
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', margin.left - 5);
+                label.setAttribute('y', yScale(i) + barHeight / 2);
+                label.setAttribute('dy', '0.35em');
+                label.setAttribute('font-family', 'Inter, sans-serif');
+                label.setAttribute('font-size', '12');
+                label.setAttribute('fill', '#9CA3AF');
+                label.setAttribute('text-anchor', 'end');
+                label.textContent = category;
+                svg.appendChild(label);
+            });
+
+            // Bars
+            categories.forEach((category, i) => {
+                const bar = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                bar.setAttribute('x', margin.left);
+                bar.setAttribute('y', yScale(i));
+                bar.setAttribute('width', xScale(counts[i]));
+                bar.setAttribute('height', barHeight);
+                bar.setAttribute('fill', barColors[category] || '#9CA3AF');
+                bar.setAttribute('rx', 5);
+                bar.setAttribute('ry', 5);
+                svg.appendChild(bar);
+            });
+            
+            // Value labels on bars
+            counts.forEach((count, i) => {
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', margin.left + xScale(count) + 5);
+                label.setAttribute('y', yScale(i) + barHeight / 2);
+                label.setAttribute('dy', '0.35em');
+                label.setAttribute('font-family', 'Inter, sans-serif');
+                label.setAttribute('font-size', '14');
+                label.setAttribute('fill', '#E5E7EB');
+                label.textContent = count;
+                svg.appendChild(label);
+            });
+
+            container.appendChild(svg);
+        }
+
+        function createGraph() {
+            // Filter data based on current UI state
+            const filteredData = analyzedData.filter(item => {
+                const selectedSupplier = supplierSelect.value;
+                const selectedABCClass = abcClassSelect.value;
+                const selectedKraljicCategory = kraljicCategorySelect.value;
+                const searchTerm = generalSearchInput.value.toLowerCase();
+                const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+                const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+                
+                const itemDate = item['Document Date'] ? new Date(item['Document Date']) : null;
+                const datesMatch = (!startDate || (itemDate && itemDate >= startDate)) && (!endDate || (itemDate && itemDate <= endDate));
+                const supplierMatch = !selectedSupplier || item.suppliers.has(selectedSupplier);
+                const abcMatch = !selectedABCClass || item.abcClass === selectedABCClass;
+                const kraljicMatch = !selectedKraljicCategory || item.kraljicClass === selectedKraljicCategory;
+
+                const searchMatch = (item.itemName || '').toLowerCase().includes(searchTerm) ||
+                                    (Array.from(item.suppliers).join(', ') || '').toLowerCase().includes(searchTerm) ||
+                                    (item['Order Unit'] || '').toLowerCase().includes(searchTerm);
+
+                return datesMatch && supplierMatch && abcMatch && kraljicMatch && searchMatch;
+            });
+            
+            // Count items per ABC class
+            const abcCounts = filteredData.reduce((acc, item) => {
+                acc[item.abcClass] = (acc[item.abcClass] || 0) + 1;
+                return acc;
+            }, {});
+            
+            // Count items per Kraljic category
+            const kraljicCounts = filteredData.reduce((acc, item) => {
+                acc[item.kraljicClass] = (acc[item.kraljicClass] || 0) + 1;
+                return acc;
+            }, {});
+            
+            // Define colors for each category
+            const abcColors = {
+                'A': '#22C55E', // Green
+                'B': '#F59E0B', // Yellow
+                'C': '#EF4444', // Red
+                'N/A': '#6B7280'
+            };
+
+            const kraljicColors = {
+                'Strategic': '#8B5CF6', // Purple
+                'Leverage': '#3B82F6', // Blue
+                'Bottleneck': '#EF4444', // Red
+                'Non-Critical': '#10B981', // Green
+                'N/A': '#6B7280'
+            };
+            
+            // Generate the graphs
+            createBarChart('abc-graph', abcCounts, abcColors);
+            createBarChart('kraljic-graph', kraljicCounts, kraljicColors);
+
+            // Show the graph section and hide the results section
+            hideAllSections();
+            analysisGraphSection.classList.remove('hidden');
+        }
+
+        function analyzeSingleItem() {
+            const totalItemsCount = parseFloat(totalItemsCountInput.value);
+            const totalConsumptionValue = parseFloat(totalConsumptionValueInput.value);
+            const orderQuantity = parseFloat(orderQuantityInput.value);
+            const netPrice = parseFloat(netPriceInput.value);
+            const supplyRisk = supplyRiskSelect.value;
+            const valueImpact = valueImpactSelect.value;
+
+            singleItemErrorDiv.textContent = '';
+            singleItemErrorDiv.classList.add('hidden');
+            singleItemResultsDiv.classList.add('hidden');
+
+            if (isNaN(totalItemsCount) || isNaN(totalConsumptionValue) || isNaN(orderQuantity) || isNaN(netPrice) || !supplyRisk || !valueImpact) {
+                singleItemErrorDiv.textContent = "Please fill in all the fields correctly.";
+                singleItemErrorDiv.classList.remove('hidden');
+                return;
+            }
+
+            const annualConsumptionValue = orderQuantity * netPrice;
+            annualConsumptionValueInput.value = annualConsumptionValue.toFixed(2);
+            
+            // ABC Analysis based on a simplified percentage of total value
+            const percentageOfTotalValue = (annualConsumptionValue / totalConsumptionValue) * 100;
+            let abcClass = 'N/A';
+            // These thresholds are a simplified proxy for ABC analysis
+            if (percentageOfTotalValue >= 10) {
+                abcClass = 'A';
+            } else if (percentageOfTotalValue >= 1) {
+                abcClass = 'B';
+            } else {
+                abcClass = 'C';
+            }
+
+            // Kraljic Matrix Analysis
+            let kraljicClass = 'N/A';
+            if (supplyRisk === 'low' && valueImpact === 'low') {
+                kraljicClass = 'Non-Critical';
+            } else if (supplyRisk === 'low' && valueImpact === 'high') {
+                kraljicClass = 'Leverage';
+            } else if (supplyRisk === 'high' && valueImpact === 'low') {
+                kraljicClass = 'Bottleneck';
+            } else if (supplyRisk === 'high' && valueImpact === 'high') {
+                kraljicClass = 'Strategic';
+            }
+
+            // Display results
+            abcResultSpan.textContent = abcClass;
+            let abcColor = 'text-gray-400';
+            if (abcClass === 'A') abcColor = 'text-green-400';
+            else if (abcClass === 'B') abcColor = 'text-yellow-400';
+            else if (abcClass === 'C') abcColor = 'text-red-400';
+            abcResultSpan.className = `font-bold ${abcColor}`;
+
+            kraljicResultSpan.textContent = kraljicClass;
+            let kraljicColor = 'text-gray-400';
+            if (kraljicClass === 'Strategic') kraljicColor = 'text-purple-400';
+            else if (kraljicClass === 'Leverage') kraljicColor = 'text-blue-400';
+            else if (kraljicClass === 'Bottleneck') kraljicColor = 'text-red-400';
+            else if (kraljicClass === 'Non-Critical') kraljicColor = 'text-green-400';
+            kraljicResultSpan.className = `font-bold ${kraljicColor}`;
+
+            singleItemResultsDiv.classList.remove('hidden');
+        }
+        
+        // Event listeners for navigation links
+        aboutLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            hideAllSections();
+            aboutSection.classList.remove('hidden');
+        });
+
+        contactLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            showContactSection();
+        });
+
+        homeLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            showHomeSections();
+        });
+
+        backToHomeLinkAbout.addEventListener('click', (event) => {
+            event.preventDefault();
+            showHomeSections();
+        });
+
+        backToHomeLinkContact.addEventListener('click', (event) => {
+            event.preventDefault();
+            showHomeSections();
+        });
+        
+        abcAnalysisLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            hideAllSections();
+            abcAnalysisSection.classList.remove('hidden');
+        });
+        
+        backToHomeLinkABC.addEventListener('click', (event) => {
+            event.preventDefault();
+            showHomeSections();
+        });
+
+        kraljicMatrixLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            hideAllSections();
+            kraljicMatrixSection.classList.remove('hidden');
+        });
+        
+        backToHomeLinkKraljic.addEventListener('click', (event) => {
+            event.preventDefault();
+            showHomeSections();
+        });
+        
+        downloadTemplateLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            downloadFile(csvData, 'Excel Template.csv', 'text/csv');
+        });
+
+        downloadTemplateLink2.addEventListener('click', (event) => {
+            event.preventDefault();
+            downloadFile(csvData, 'Excel Template.csv', 'text/csv');
+        });
+
+        getStartedBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            showGetStartedSection();
+        });
+        
+        singleItemAnalysisCard.addEventListener('click', (event) => {
+            event.preventDefault();
+            hideAllSections();
+            singleItemAnalysisSection.classList.remove('hidden');
+        });
+
+        batchAnalysisCard.addEventListener('click', (event) => {
+            event.preventDefault();
+            hideAllSections();
+            batchAnalysisSection.classList.remove('hidden');
+        });
+        
+        backToGetStartedFromSingleLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            showGetStartedSection();
+        });
+        
+        // This new event listener for the file input handles the initial file load and UI update
+        excelFileInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+            loadingIndicator.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+            
+            try {
+                await processFile(file);
+            } catch (e) {
+                errorMessage.textContent = `An error occurred: ${e.message}`;
+                errorMessage.classList.remove('hidden');
+            } finally {
+                loadingIndicator.classList.add('hidden');
+            }
+        });
+
+        // The "Analyze File" button now only processes the sheet if a file has been loaded
+        uploadBtn.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const file = excelFileInput.files[0];
+            if (!file) {
+                errorMessage.textContent = "Please select a file to analyze.";
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            loadingIndicator.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+
+            try {
+                if (file.name.endsWith('.xlsx')) {
+                    const selectedSheet = sheetSelect.value;
+                    if (workbook && selectedSheet) {
+                        processSheet(selectedSheet);
+                    } else {
+                        errorMessage.textContent = "Please select a sheet to analyze.";
+                        errorMessage.classList.remove('hidden');
+                    }
+                } else if (file.name.endsWith('.csv')) {
+                    const data = Papa.parse(await file.text(), { header: true, dynamicTyping: true }).data;
+                    if (data && data.length > 0) {
+                        rawData = data;
+                        processSheet(null); // Process the entire CSV as a single sheet
+                    } else {
+                        errorMessage.textContent = "Could not parse data from the CSV file.";
+                        errorMessage.classList.remove('hidden');
+                    }
+                }
+            } catch (e) {
+                errorMessage.textContent = `An error occurred: ${e.message}`;
+                errorMessage.classList.remove('hidden');
+            } finally {
+                loadingIndicator.classList.add('hidden');
+            }
+        });
+
+        // Event listener for general search input
+        generalSearchInput.addEventListener('input', () => {
+             // Delay the rendering to avoid performance issues while typing
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(renderResults, 300);
+        });
+        
+        // Event listeners for sorting and filtering
+        sortSelect.addEventListener('change', displayResults);
+        startDateInput.addEventListener('change', renderResults);
+        endDateInput.addEventListener('change', renderResults);
+        supplierSelect.addEventListener('change', displayResults);
+        abcClassSelect.addEventListener('change', displayResults);
+        kraljicCategorySelect.addEventListener('change', displayResults);
+        createGraphBtn.addEventListener('click', createGraph);
+        backToResultsLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            hideAllSections();
+            analysisResultsSection.classList.remove('hidden');
+        });
+
+        backToHomeFromGetStartedLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            showHomeSections();
+        });
+
+        backToHomeFromBatchLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            showHomeSections();
+        });
+
+        backToUploadLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            hideAllSections();
+            batchAnalysisSection.classList.remove('hidden');
+        });
+        
+        // Event listener for single item analysis
+        categorizeBtn.addEventListener('click', analyzeSingleItem);
+
+        // Use a setTimeout to control the duration of the animation before hiding the splash screen
+        window.onload = function() {
+            setTimeout(showMainContent, 2500);
+        };
+    </script>
+</body>
+</html>
