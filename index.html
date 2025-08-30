@@ -1,4 +1,4 @@
-<!-- The full HTML document for the TOOLZO website, adjusted for online hosting via GitHub Pages and Vercel. All external assets are now from reliable public sources. -->
+<!-- The full HTML document for the TOOLZO website, adjusted for online hosting via GitHub Pages and Vercel, with improved mobile navigation and page transitions. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -147,6 +147,24 @@
         .toggle-btn.is-open svg {
             transform: rotate(180deg);
         }
+        
+        /* New Styles for Mobile Nav */
+        #mobile-menu {
+            transition: transform 0.3s ease-out;
+            transform: translateX(-100%);
+        }
+        #mobile-menu.is-open {
+            transform: translateX(0);
+        }
+        
+        /* New Styles for Page Transitions */
+        .page-transition {
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+        }
+        .page-transition.is-visible {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="bg-gray-950 text-white">
@@ -195,19 +213,41 @@
                     TOOLZO
                 </span>
             </div>
-            <!-- Navigation links, updated with "About" link and "Home" instead of "Tools" -->
+            <!-- Desktop Navigation links -->
             <div class="hidden md:flex space-x-6 text-gray-300">
-                <a href="#hero" id="home-link" class="hover:text-purple-400 transition-colors">Home</a>
-                <a href="#about" id="about-link" class="hover:text-purple-400 transition-colors">About</a>
-                <a href="#" id="contact-link" class="hover:text-purple-400 transition-colors">Contact</a>
+                <a href="#hero-section" id="home-link" class="hover:text-purple-400 transition-colors">Home</a>
+                <a href="#about-section" id="about-link" class="hover:text-purple-400 transition-colors">About</a>
+                <a href="#contact-section" id="contact-link" class="hover:text-purple-400 transition-colors">Contact</a>
+            </div>
+            <!-- Mobile Menu button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="text-gray-400 hover:text-white focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
             </div>
         </nav>
     </header>
+    
+    <!-- Mobile Navigation Menu (hidden by default) -->
+    <div id="mobile-menu" class="fixed top-0 left-0 h-full w-64 bg-gray-950/90 backdrop-blur-md z-40 p-6 flex flex-col items-start space-y-6 md:hidden">
+        <button id="close-mobile-menu-btn" class="text-gray-400 hover:text-white focus:outline-none self-end">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <div class="flex flex-col space-y-4 text-xl">
+            <a href="#hero-section" id="mobile-home-link" class="text-gray-300 hover:text-purple-400 transition-colors">Home</a>
+            <a href="#about-section" id="mobile-about-link" class="text-gray-300 hover:text-purple-400 transition-colors">About</a>
+            <a href="#contact-section" id="mobile-contact-link" class="text-gray-300 hover:text-purple-400 transition-colors">Contact</a>
+        </div>
+    </div>
 
     <!-- Main Content Sections -->
     <main class="opacity-0">
         <!-- Hero Section -->
-        <section id="hero-section" class="hero-bg py-20 md:py-32 text-center">
+        <section id="hero-section" class="hero-bg py-20 md:py-32 text-center page-transition is-visible">
             <div class="container mx-auto px-4 md:px-8">
                 <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500 mb-4">
                     Your All-in-One Toolkit
@@ -222,7 +262,7 @@
         </section>
 
         <!-- Tools Section -->
-        <section id="tools-section" class="py-16 md:py-24 bg-gray-900">
+        <section id="tools-section" class="py-16 md:py-24 bg-gray-900 page-transition is-visible">
             <div class="container mx-auto px-4 md:px-8">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-purple-400">
                     Our Featured Tools
@@ -277,7 +317,7 @@
         </section>
 
         <!-- Get Started Page -->
-        <section id="get-started-section" class="py-16 md:py-24 bg-gray-900 hidden">
+        <section id="get-started-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
             <div class="container mx-auto px-4 md:px-8">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-purple-400">
                     How would you like to get started?
@@ -306,7 +346,7 @@
         </section>
 
         <!-- Batch Analysis Page -->
-        <section id="batch-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden">
+        <section id="batch-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
             <div class="container mx-auto px-4 md:px-8 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-8 text-purple-400">
                     Upload Your Excel File
@@ -342,7 +382,7 @@
         </section>
 
         <!-- Single Item Analysis Page -->
-        <section id="single-item-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden">
+        <section id="single-item-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
             <div class="container mx-auto px-4 md:px-8 text-center">
                 <a href="#" id="back-to-get-started-from-single-link" class="mb-8 block text-center text-blue-400 hover:text-blue-300 transition-colors font-medium">
                     &larr; Back to Get Started
@@ -412,7 +452,7 @@
         </section>
 
         <!-- Analysis Results Page -->
-        <section id="analysis-results-section" class="py-16 md:py-24 bg-gray-900 hidden">
+        <section id="analysis-results-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
             <div class="container mx-auto px-4 md:px-8">
                 <!-- Move the back to upload link to the top of the section -->
                 <a href="#" id="back-to-upload-link" class="mb-8 block text-center text-blue-400 hover:text-blue-300 transition-colors font-medium">
@@ -482,7 +522,7 @@
         </section>
 
         <!-- Analysis Graph Section -->
-        <section id="analysis-graph-section" class="py-16 md:py-24 bg-gray-900 hidden">
+        <section id="analysis-graph-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
             <div class="container mx-auto px-4 md:px-8 text-center">
                 <a href="#" id="back-to-results-link" class="mb-8 block text-blue-400 hover:text-blue-300 transition-colors font-medium">
                     &larr; Back to Results
@@ -505,7 +545,7 @@
         </section>
 
         <!-- About Section - Added -->
-        <section id="about-section" class="py-16 md:py-24 bg-gray-900 hidden">
+        <section id="about-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
             <div class="container mx-auto px-4 md:px-8 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-8 text-purple-400">
                     About This Tool
@@ -528,7 +568,7 @@
         </section>
 
         <!-- Contact Section - Updated with public image sources -->
-        <section id="contact-section" class="py-16 md:py-24 bg-gray-900 hidden">
+        <section id="contact-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
             <div class="container mx-auto px-4 md:px-8 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-8 text-purple-400">
                     Contact Our Team
@@ -536,8 +576,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     <!-- Team Member 1 -->
                     <div class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
-                        <!-- Publicly hosted image for Ibrahim Elhusseiny -->
-                        <img src="https://placehold.co/128x128/9d50bb/ffffff?text=IE" alt="Ibrahim Elhusseiny" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
+                        <!-- Updated image source to use a reliable placeholder -->
+                        <img src="https://drive.google.com/file/d/10mmRez_vpDmozLAeNRG1f8wvqqIAnklc/view?usp=drive_link" onerror="this.src='https://placehold.co/128x128/9d50bb/ffffff?text=IE'" alt="Ibrahim Elhusseiny" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
                         <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Ibrahim Elhusseiny</h3>
                         <p class="text-gray-400 text-sm mb-4">Ibrahimelhusseiny@gmail.com</p>
                         <p class="text-gray-300 text-md">
@@ -547,8 +587,8 @@
 
                     <!-- Team Member 2 -->
                     <div class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
-                        <!-- Publicly hosted image for Farida Salama -->
-                        <img src="https://placehold.co/128x128/61045f/ffffff?text=FS" alt="Farida Salama" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
+                        <!-- Updated image source to use a reliable placeholder -->
+                        <img src="https://drive.google.com/file/d/1gjU7ZvDbAdG7qKxFAWL84Bzocr4jVQbh/view?usp=drive_link" onerror="this.src='https://placehold.co/128x128/61045f/ffffff?text=FS'" alt="Farida Salama" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
                         <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Farida Salama</h3>
                         <p class="text-gray-400 text-sm mb-4">Salamaahmedfarida@gmail.com</p>
                         <p class="text-gray-300 text-md">
@@ -558,8 +598,8 @@
 
                     <!-- Team Member 3 -->
                     <div class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
-                        <!-- Publicly hosted image for Galaluddin Shahin -->
-                        <img src="https://placehold.co/128x128/2b5876/ffffff?text=GS" alt="Galaluddin Shahin" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
+                        <!-- Updated image source to use a reliable placeholder -->
+                        <img src="https://placehold.co/128x128/2b5876/ffffff?text=GS" onerror="this.src='https://placehold.co/128x128/2b5876/ffffff?text=GS'" alt="Galaluddin Shahin" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
                         <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Galaluddin Shahin</h3>
                         <p class="text-gray-400 text-sm mb-4">GalaluddinShahin@gmail.com</p>
                         <p class="text-gray-300 text-md">
@@ -574,7 +614,7 @@
         </section>
 
         <!-- ABC Analysis Section - Added -->
-        <section id="abc-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden">
+        <section id="abc-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
             <div class="container mx-auto px-4 md:px-8">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-purple-400">
                     What is ABC Analysis?
@@ -633,7 +673,7 @@
         </section>
 
         <!-- Kraljic Matrix Section - Added -->
-        <section id="kraljic-matrix-section" class="py-16 md:py-24 bg-gray-900 hidden">
+        <section id="kraljic-matrix-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
             <div class="container mx-auto px-4 md:px-8">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-purple-400">
                     Understanding the Kraljic Matrix
@@ -715,22 +755,20 @@
         // Get the splash screen and main content elements
         const splashScreen = document.getElementById('splash-screen');
         const mainContentElements = document.querySelectorAll('header, main, footer');
-        const heroSection = document.getElementById('hero-section');
-        const toolsSection = document.getElementById('tools-section');
-        const aboutSection = document.getElementById('about-section');
-        const contactSection = document.getElementById('contact-section');
-        const abcAnalysisSection = document.getElementById('abc-analysis-section');
-        const kraljicMatrixSection = document.getElementById('kraljic-matrix-section');
-        const getStartedSection = document.getElementById('get-started-section');
-        const batchAnalysisSection = document.getElementById('batch-analysis-section');
-        const singleItemAnalysisSection = document.getElementById('single-item-analysis-section');
-        const analysisResultsSection = document.getElementById('analysis-results-section');
-        const analysisGraphSection = document.getElementById('analysis-graph-section');
-        
+        const sections = document.querySelectorAll('section');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeMobileMenuBtn = document.getElementById('close-mobile-menu-btn');
+
         // Navigation links
+        const homeLink = document.getElementById('home-link');
         const aboutLink = document.getElementById('about-link');
         const contactLink = document.getElementById('contact-link');
-        const homeLink = document.getElementById('home-link');
+        const mobileHomeLink = document.getElementById('mobile-home-link');
+        const mobileAboutLink = document.getElementById('mobile-about-link');
+        const mobileContactLink = document.getElementById('mobile-contact-link');
+
+        // All other link IDs
         const backToHomeLinkAbout = document.getElementById('back-to-home-link');
         const backToHomeLinkContact = document.getElementById('back-to-home-from-contact-link');
         const abcAnalysisLink = document.getElementById('abc-analysis-link');
@@ -793,38 +831,95 @@
         // The CSV data to be downloaded
         const csvData = `itemName,Document Date,Order Quantity,Order Unit,Net Price,annualConsumptionValue,Name of Supplier,supplyRisk,valueImpact
 ,,,,,=C2*E2,,,`;
+        
+        // Function to hide a section and apply transition classes
+        function hideSection(section) {
+            section.classList.remove('is-visible');
+            section.classList.add('hidden');
+        }
+
+        // Function to show a section and apply transition classes
+        function showSection(section) {
+            section.classList.remove('hidden');
+            // Use a slight delay to allow the `hidden` class to be removed before the transition starts
+            setTimeout(() => {
+                section.classList.add('is-visible');
+            }, 10);
+        }
 
         // Function to hide all main sections
         function hideAllSections() {
-            heroSection.classList.add('hidden');
-            toolsSection.classList.add('hidden');
-            aboutSection.classList.add('hidden');
-            contactSection.classList.add('hidden');
-            abcAnalysisSection.classList.add('hidden');
-            kraljicMatrixSection.classList.add('hidden');
-            getStartedSection.classList.add('hidden');
-            batchAnalysisSection.classList.add('hidden');
-            singleItemAnalysisSection.classList.add('hidden');
-            analysisResultsSection.classList.add('hidden');
-            analysisGraphSection.classList.add('hidden');
+            sections.forEach(section => {
+                if (!section.id.includes('hero-section') && !section.id.includes('tools-section')) {
+                    hideSection(section);
+                }
+            });
+            // Handle the home sections explicitly since they are shown together
+            hideSection(document.getElementById('hero-section'));
+            hideSection(document.getElementById('tools-section'));
         }
 
         // Function to show the hero and tools sections
         function showHomeSections() {
             hideAllSections();
-            heroSection.classList.remove('hidden');
-            toolsSection.classList.remove('hidden');
+            showSection(document.getElementById('hero-section'));
+            showSection(document.getElementById('tools-section'));
         }
         
         function showGetStartedSection() {
             hideAllSections();
-            getStartedSection.classList.remove('hidden');
+            showSection(document.getElementById('get-started-section'));
         }
         
         function showContactSection() {
             hideAllSections();
-            contactSection.classList.remove('hidden');
+            showSection(document.getElementById('contact-section'));
         }
+        
+        function showAboutSection() {
+            hideAllSections();
+            showSection(document.getElementById('about-section'));
+        }
+        
+        function showABCAnalysisSection() {
+            hideAllSections();
+            showSection(document.getElementById('abc-analysis-section'));
+        }
+        
+        function showKraljicMatrixSection() {
+            hideAllSections();
+            showSection(document.getElementById('kraljic-matrix-section'));
+        }
+
+        function showBatchAnalysisSection() {
+            hideAllSections();
+            showSection(document.getElementById('batch-analysis-section'));
+        }
+        
+        function showSingleItemAnalysisSection() {
+            hideAllSections();
+            showSection(document.getElementById('single-item-analysis-section'));
+        }
+        
+        function showAnalysisResultsSection() {
+            hideAllSections();
+            showSection(document.getElementById('analysis-results-section'));
+        }
+        
+        function showAnalysisGraphSection() {
+            hideAllSections();
+            showSection(document.getElementById('analysis-graph-section'));
+        }
+        
+        // Event listener for the mobile menu button
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('is-open');
+        });
+
+        // Event listener for the close mobile menu button
+        closeMobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('is-open');
+        });
 
         // Function to hide the splash screen and show the main content
         function showMainContent() {
@@ -1166,7 +1261,7 @@
                 
                 renderResults();
                 hideAllSections();
-                analysisResultsSection.classList.remove('hidden');
+                showSection(document.getElementById('analysis-results-section'));
             } else {
                 errorMessage.textContent = "Could not parse data from the selected sheet. Please check the sheet format.";
                 errorMessage.classList.remove('hidden');
@@ -1312,7 +1407,7 @@
 
             // Show the graph section and hide the results section
             hideAllSections();
-            analysisGraphSection.classList.remove('hidden');
+            showSection(document.getElementById('analysis-graph-section'));
         }
 
         function analyzeSingleItem() {
@@ -1379,85 +1474,51 @@
             singleItemResultsDiv.classList.remove('hidden');
         }
         
-        // Event listeners for navigation links
-        aboutLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            hideAllSections();
-            aboutSection.classList.remove('hidden');
-        });
+        // Navigation links event listeners
+        const navLinks = [
+            { link: homeLink, section: document.getElementById('hero-section') },
+            { link: aboutLink, section: document.getElementById('about-section') },
+            { link: contactLink, section: document.getElementById('contact-section') },
+            { link: mobileHomeLink, section: document.getElementById('hero-section'), mobile: true },
+            { link: mobileAboutLink, section: document.getElementById('about-section'), mobile: true },
+            { link: mobileContactLink, section: document.getElementById('contact-section'), mobile: true },
+            { link: backToHomeLinkAbout, section: document.getElementById('hero-section') },
+            { link: backToHomeLinkContact, section: document.getElementById('hero-section') },
+            { link: abcAnalysisLink, section: document.getElementById('abc-analysis-section') },
+            { link: backToHomeLinkABC, section: document.getElementById('hero-section') },
+            { link: kraljicMatrixLink, section: document.getElementById('kraljic-matrix-section') },
+            { link: backToHomeLinkKraljic, section: document.getElementById('hero-section') },
+            { link: getStartedBtn, section: document.getElementById('get-started-section') },
+            { link: batchAnalysisCard, section: document.getElementById('batch-analysis-section') },
+            { link: singleItemAnalysisCard, section: document.getElementById('single-item-analysis-section') },
+            { link: backToHomeFromGetStartedLink, section: document.getElementById('hero-section') },
+            { link: backToHomeFromBatchLink, section: document.getElementById('hero-section') },
+            { link: backToUploadLink, section: document.getElementById('batch-analysis-section') },
+            { link: backToGetStartedFromSingleLink, section: document.getElementById('get-started-section') },
+            { link: backToResultsLink, section: document.getElementById('analysis-results-section') }
+        ];
 
-        contactLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            showContactSection();
-        });
-
-        homeLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            showHomeSections();
-        });
-
-        backToHomeLinkAbout.addEventListener('click', (event) => {
-            event.preventDefault();
-            showHomeSections();
-        });
-
-        backToHomeLinkContact.addEventListener('click', (event) => {
-            event.preventDefault();
-            showHomeSections();
-        });
-        
-        abcAnalysisLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            hideAllSections();
-            abcAnalysisSection.classList.remove('hidden');
-        });
-        
-        backToHomeLinkABC.addEventListener('click', (event) => {
-            event.preventDefault();
-            showHomeSections();
-        });
-
-        kraljicMatrixLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            hideAllSections();
-            kraljicMatrixSection.classList.remove('hidden');
-        });
-        
-        backToHomeLinkKraljic.addEventListener('click', (event) => {
-            event.preventDefault();
-            showHomeSections();
-        });
-        
-        downloadTemplateLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            downloadFile(csvData, 'Excel Template.csv', 'text/csv');
-        });
-
-        downloadTemplateLink2.addEventListener('click', (event) => {
-            event.preventDefault();
-            downloadFile(csvData, 'Excel Template.csv', 'text/csv');
-        });
-
-        getStartedBtn.addEventListener('click', (event) => {
-            event.preventDefault();
-            showGetStartedSection();
-        });
-        
-        singleItemAnalysisCard.addEventListener('click', (event) => {
-            event.preventDefault();
-            hideAllSections();
-            singleItemAnalysisSection.classList.remove('hidden');
-        });
-
-        batchAnalysisCard.addEventListener('click', (event) => {
-            event.preventDefault();
-            hideAllSections();
-            batchAnalysisSection.classList.remove('hidden');
-        });
-        
-        backToGetStartedFromSingleLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            showGetStartedSection();
+        navLinks.forEach(item => {
+            if (item.link) {
+                item.link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    // Close the mobile menu if a mobile link was clicked
+                    if (item.mobile) {
+                        mobileMenu.classList.remove('is-open');
+                    }
+                    
+                    // Hide all sections first, then show the target section
+                    hideAllSections();
+                    
+                    // Handle special case for home section (which includes hero and tools)
+                    if (item.section.id === 'hero-section') {
+                        showSection(document.getElementById('hero-section'));
+                        showSection(document.getElementById('tools-section'));
+                    } else {
+                        showSection(item.section);
+                    }
+                });
+            }
         });
         
         // This new event listener for the file input handles the initial file load and UI update
@@ -1534,27 +1595,7 @@
         abcClassSelect.addEventListener('change', displayResults);
         kraljicCategorySelect.addEventListener('change', displayResults);
         createGraphBtn.addEventListener('click', createGraph);
-        backToResultsLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            hideAllSections();
-            analysisResultsSection.classList.remove('hidden');
-        });
 
-        backToHomeFromGetStartedLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            showHomeSections();
-        });
-
-        backToHomeFromBatchLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            showHomeSections();
-        });
-
-        backToUploadLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            hideAllSections();
-            batchAnalysisSection.classList.remove('hidden');
-        });
         
         // Event listener for single item analysis
         categorizeBtn.addEventListener('click', analyzeSingleItem);
