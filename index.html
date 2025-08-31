@@ -1,4 +1,4 @@
-<!-- The full HTML document for the TOOLZO website, adjusted for online hosting via GitHub Pages and Vercel, with improved mobile navigation and page transitions. -->
+<!-- The full HTML document for the TOOLZO website, now with animated splash screen, improved image handling, and mobile responsiveness -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,6 +24,7 @@
         }
         body {
             font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevents horizontal scroll from menu transform */
         }
         .hero-bg {
             /* A subtle gradient background for the hero section */
@@ -147,24 +148,47 @@
         .toggle-btn.is-open svg {
             transform: rotate(180deg);
         }
-        
-        /* New Styles for Mobile Nav */
+
+        /* Mobile menu styling - Updated to slide from the side */
         #mobile-menu {
-            transition: transform 0.3s ease-out;
-            transform: translateX(-100%);
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 80%; /* Takes up 80% of the screen width */
+            max-width: 320px; /* Prevents it from getting too wide on tablets */
+            height: 100%;
+            z-index: 60; /* Above the content but below the header */
+            transform: translateX(100%); /* Start off-screen to the right */
+            transition: transform 0.3s ease-in-out;
+            background-color: #1e1e2d; /* A solid background to hide content behind */
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
         }
+
         #mobile-menu.is-open {
-            transform: translateX(0);
+            transform: translateX(0); /* Slide into view */
         }
         
-        /* New Styles for Page Transitions */
-        .page-transition {
-            transition: opacity 0.5s ease-in-out;
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 50;
             opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
         }
-        .page-transition.is-visible {
+
+        #overlay.is-open {
             opacity: 1;
+            visibility: visible;
         }
+
     </style>
 </head>
 <body class="bg-gray-950 text-white">
@@ -213,15 +237,15 @@
                     TOOLZO
                 </span>
             </div>
-            <!-- Desktop Navigation links -->
+            <!-- Navigation links, updated with "About" link and "Home" instead of "Tools" -->
             <div class="hidden md:flex space-x-6 text-gray-300">
-                <a href="#hero-section" id="home-link" class="hover:text-purple-400 transition-colors">Home</a>
-                <a href="#about-section" id="about-link" class="hover:text-purple-400 transition-colors">About</a>
-                <a href="#contact-section" id="contact-link" class="hover:text-purple-400 transition-colors">Contact</a>
+                <a href="#hero" id="home-link" class="hover:text-purple-400 transition-colors">Home</a>
+                <a href="#about" id="about-link" class="hover:text-purple-400 transition-colors">About</a>
+                <a href="#" id="contact-link" class="hover:text-purple-400 transition-colors">Contact</a>
             </div>
             <!-- Mobile Menu button -->
             <div class="md:hidden">
-                <button id="mobile-menu-btn" class="text-gray-400 hover:text-white focus:outline-none">
+                <button id="mobile-menu-btn" class="text-white focus:outline-none p-2">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
@@ -230,24 +254,28 @@
         </nav>
     </header>
     
-    <!-- Mobile Navigation Menu (hidden by default) -->
-    <div id="mobile-menu" class="fixed top-0 left-0 h-full w-64 bg-gray-950/90 backdrop-blur-md z-40 p-6 flex flex-col items-start space-y-6 md:hidden">
-        <button id="close-mobile-menu-btn" class="text-gray-400 hover:text-white focus:outline-none self-end">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-        <div class="flex flex-col space-y-4 text-xl">
-            <a href="#hero-section" id="mobile-home-link" class="text-gray-300 hover:text-purple-400 transition-colors">Home</a>
-            <a href="#about-section" id="mobile-about-link" class="text-gray-300 hover:text-purple-400 transition-colors">About</a>
-            <a href="#contact-section" id="mobile-contact-link" class="text-gray-300 hover:text-purple-400 transition-colors">Contact</a>
+    <!-- Mobile Menu - Updated to be a side menu -->
+    <div id="mobile-menu" class="md:hidden">
+        <div class="flex flex-col flex-grow items-start space-y-8 text-gray-300">
+            <!-- Close button for the side menu -->
+            <button id="mobile-menu-close-btn" class="self-end text-white focus:outline-none">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <a href="#hero" id="mobile-home-link" class="block w-full py-2 hover:text-purple-400 transition-colors text-2xl font-semibold border-b border-gray-700">Home</a>
+            <a href="#about" id="mobile-about-link" class="block w-full py-2 hover:text-purple-400 transition-colors text-2xl font-semibold border-b border-gray-700">About</a>
+            <a href="#" id="mobile-contact-link" class="block w-full py-2 hover:text-purple-400 transition-colors text-2xl font-semibold border-b border-gray-700">Contact</a>
         </div>
     </div>
+    
+    <!-- Overlay for the side menu -->
+    <div id="overlay"></div>
 
     <!-- Main Content Sections -->
     <main class="opacity-0">
         <!-- Hero Section -->
-        <section id="hero-section" class="hero-bg py-20 md:py-32 text-center page-transition is-visible">
+        <section id="hero-section" class="hero-bg py-20 md:py-32 text-center">
             <div class="container mx-auto px-4 md:px-8">
                 <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500 mb-4">
                     Your All-in-One Toolkit
@@ -262,7 +290,7 @@
         </section>
 
         <!-- Tools Section -->
-        <section id="tools-section" class="py-16 md:py-24 bg-gray-900 page-transition is-visible">
+        <section id="tools-section" class="py-16 md:py-24 bg-gray-900">
             <div class="container mx-auto px-4 md:px-8">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-purple-400">
                     Our Featured Tools
@@ -317,7 +345,7 @@
         </section>
 
         <!-- Get Started Page -->
-        <section id="get-started-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
+        <section id="get-started-section" class="py-16 md:py-24 bg-gray-900 hidden">
             <div class="container mx-auto px-4 md:px-8">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-purple-400">
                     How would you like to get started?
@@ -346,7 +374,7 @@
         </section>
 
         <!-- Batch Analysis Page -->
-        <section id="batch-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
+        <section id="batch-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden">
             <div class="container mx-auto px-4 md:px-8 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-8 text-purple-400">
                     Upload Your Excel File
@@ -364,7 +392,7 @@
                     "/>
                      <!-- Sheet selection dropdown - hidden by default -->
                     <div id="sheet-selection-container" class="hidden mt-4">
-                        <label for="sheet-select" class="text-gray-400 block mb-2">Select Sheet:</label>
+                        <label for="sheet-select" class="block text-gray-400 mb-2">Select Sheet:</label>
                         <select id="sheet-select" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full mb-4">
                             <!-- Options will be dynamically added here -->
                         </select>
@@ -382,7 +410,7 @@
         </section>
 
         <!-- Single Item Analysis Page -->
-        <section id="single-item-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
+        <section id="single-item-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden">
             <div class="container mx-auto px-4 md:px-8 text-center">
                 <a href="#" id="back-to-get-started-from-single-link" class="mb-8 block text-center text-blue-400 hover:text-blue-300 transition-colors font-medium">
                     &larr; Back to Get Started
@@ -452,7 +480,7 @@
         </section>
 
         <!-- Analysis Results Page -->
-        <section id="analysis-results-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
+        <section id="analysis-results-section" class="py-16 md:py-24 bg-gray-900 hidden">
             <div class="container mx-auto px-4 md:px-8">
                 <!-- Move the back to upload link to the top of the section -->
                 <a href="#" id="back-to-upload-link" class="mb-8 block text-center text-blue-400 hover:text-blue-300 transition-colors font-medium">
@@ -492,9 +520,13 @@
                         <span class="text-gray-400 whitespace-nowrap">To:</span>
                         <input type="date" id="end-date-input" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full">
                     </div>
-                    <select id="supplier-select" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full sm:w-1/2">
-                        <option value="">All Suppliers</option>
-                    </select>
+                    <!-- Updated the supplier filter to a text input with a datalist -->
+                    <div>
+                        <input type="text" id="supplier-input" placeholder="Filter by supplier..." list="supplier-list" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full sm:w-auto">
+                        <datalist id="supplier-list">
+                            <!-- Options will be dynamically added here -->
+                        </datalist>
+                    </div>
                 </div>
                 <!-- New Category Filters -->
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 max-w-4xl mx-auto">
@@ -512,8 +544,10 @@
                         <option value="Non-Critical">Non-Critical</option>
                     </select>
                 </div>
-                <!-- Item count -->
+                <!-- Item count and total value display -->
                 <div id="item-count" class="text-center text-sm text-gray-400 mb-4"></div>
+                <div id="filtered-total-value" class="text-center text-sm text-gray-400 mb-4"></div>
+                <div id="total-value-percentage" class="text-center text-sm text-gray-400 mb-4"></div>
                 <!-- Results container - changed to md:grid-cols-2 for tablet support -->
                 <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                     <!-- Cards will be dynamically inserted here -->
@@ -522,7 +556,7 @@
         </section>
 
         <!-- Analysis Graph Section -->
-        <section id="analysis-graph-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
+        <section id="analysis-graph-section" class="py-16 md:py-24 bg-gray-900 hidden">
             <div class="container mx-auto px-4 md:px-8 text-center">
                 <a href="#" id="back-to-results-link" class="mb-8 block text-blue-400 hover:text-blue-300 transition-colors font-medium">
                     &larr; Back to Results
@@ -545,12 +579,12 @@
         </section>
 
         <!-- About Section - Added -->
-        <section id="about-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
+        <section id="about-section" class="py-16 md:py-24 bg-gray-900 hidden">
             <div class="container mx-auto px-4 md:px-8 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-8 text-purple-400">
                     About This Tool
                 </h2>
-                <div class="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 max-w-2xl mx-auto">
+                <div class="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 max-w-3xl mx-auto">
                     <p class="text-gray-300 text-lg mb-6 leading-relaxed">
                         This tool was professionally developed as part of a collaborative project to assist with the categorization of the Kraljic Matrix and ABC categories.
                     </p>
@@ -567,17 +601,18 @@
             </div>
         </section>
 
-        <!-- Contact Section - Updated with public image sources -->
-        <section id="contact-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
+        <!-- Contact Section - Updated -->
+        <section id="contact-section" class="py-16 md:py-24 bg-gray-900 hidden">
             <div class="container mx-auto px-4 md:px-8 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-8 text-purple-400">
                     Contact Our Team
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     <!-- Team Member 1 -->
-                    <div class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
+                   <div class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
                         <!-- Updated image source to use a reliable placeholder -->
-                        <img src="https://github.com/iprahimmohamed249/TOOLZO/blob/main/Ibrahim.jpeg" alt="Ibrahim Elhusseiny" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
+                         <img src="https://live.staticflickr.com/65535/54755016067_39f47bc607_b.jpg" onerror="this.src='https://placehold.co/1024x1024/9d50bb/ffffff?text=IE'" alt="Ibrahim Elhusseiny" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
+                        <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Ibrahim Elhusseiny</h3>
                         <p class="text-gray-400 text-sm mb-4">Ibrahimelhusseiny@gmail.com</p>
                         <p class="text-gray-300 text-md">
                             A highly skilled developer who led the front-end implementation and user interface design of the platform.
@@ -587,7 +622,7 @@
                     <!-- Team Member 2 -->
                     <div class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
                         <!-- Updated image source to use a reliable placeholder -->
-                        <img src="https://drive.google.com/file/d/1gjU7ZvDbAdG7qKxFAWL84Bzocr4jVQbh/view?usp=drive_link" onerror="this.src='https://placehold.co/128x128/61045f/ffffff?text=FS'" alt="Farida Salama" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
+                        <img src="https://live.staticflickr.com/65535/54755966896_ce6c5d379d_b.jpg" onerror="this.src='https://placehold.co/128x128/61045f/ffffff?text=FS'" alt="Farida Salama" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
                         <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Farida Salama</h3>
                         <p class="text-gray-400 text-sm mb-4">Salamaahmedfarida@gmail.com</p>
                         <p class="text-gray-300 text-md">
@@ -598,9 +633,9 @@
                     <!-- Team Member 3 -->
                     <div class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
                         <!-- Updated image source to use a reliable placeholder -->
-                        <img src="https://placehold.co/128x128/2b5876/ffffff?text=GS" onerror="this.src='https://placehold.co/128x128/2b5876/ffffff?text=GS'" alt="Galaluddin Shahin" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
+                        <img src="https://live.staticflickr.com/65535/54755983311_976306c276_b.jpg" onerror="this.src='https://placehold.co/128x128/2b5876/ffffff?text=GS'" alt="Galaluddin Shahin" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
                         <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Galaluddin Shahin</h3>
-                        <p class="text-gray-400 text-sm mb-4">GalaluddinShahin@gmail.com</p>
+                        <p class="text-gray-400 text-sm mb-4">Galal.e.shahin@Gmail.com</p>
                         <p class="text-gray-300 text-md">
                             The project supervisor, who provided expert guidance and oversight throughout the development lifecycle to ensure high-quality standards.
                         </p>
@@ -613,7 +648,7 @@
         </section>
 
         <!-- ABC Analysis Section - Added -->
-        <section id="abc-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
+        <section id="abc-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden">
             <div class="container mx-auto px-4 md:px-8">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-purple-400">
                     What is ABC Analysis?
@@ -672,7 +707,7 @@
         </section>
 
         <!-- Kraljic Matrix Section - Added -->
-        <section id="kraljic-matrix-section" class="py-16 md:py-24 bg-gray-900 hidden page-transition">
+        <section id="kraljic-matrix-section" class="py-16 md:py-24 bg-gray-900 hidden">
             <div class="container mx-auto px-4 md:px-8">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-purple-400">
                     Understanding the Kraljic Matrix
@@ -754,20 +789,30 @@
         // Get the splash screen and main content elements
         const splashScreen = document.getElementById('splash-screen');
         const mainContentElements = document.querySelectorAll('header, main, footer');
-        const sections = document.querySelectorAll('section');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const closeMobileMenuBtn = document.getElementById('close-mobile-menu-btn');
-
+        const heroSection = document.getElementById('hero-section');
+        const toolsSection = document.getElementById('tools-section');
+        const aboutSection = document.getElementById('about-section');
+        const contactSection = document.getElementById('contact-section');
+        const abcAnalysisSection = document.getElementById('abc-analysis-section');
+        const kraljicMatrixSection = document.getElementById('kraljic-matrix-section');
+        const getStartedSection = document.getElementById('get-started-section');
+        const batchAnalysisSection = document.getElementById('batch-analysis-section');
+        const singleItemAnalysisSection = document.getElementById('single-item-analysis-section');
+        const analysisResultsSection = document.getElementById('analysis-results-section');
+        const analysisGraphSection = document.getElementById('analysis-graph-section');
+        
         // Navigation links
-        const homeLink = document.getElementById('home-link');
         const aboutLink = document.getElementById('about-link');
         const contactLink = document.getElementById('contact-link');
+        const homeLink = document.getElementById('home-link');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuCloseBtn = document.getElementById('mobile-menu-close-btn');
+        const overlay = document.getElementById('overlay');
         const mobileHomeLink = document.getElementById('mobile-home-link');
         const mobileAboutLink = document.getElementById('mobile-about-link');
         const mobileContactLink = document.getElementById('mobile-contact-link');
 
-        // All other link IDs
         const backToHomeLinkAbout = document.getElementById('back-to-home-link');
         const backToHomeLinkContact = document.getElementById('back-to-home-from-contact-link');
         const abcAnalysisLink = document.getElementById('abc-analysis-link');
@@ -795,22 +840,29 @@
         const sortSelect = document.getElementById('sort-select');
         const startDateInput = document.getElementById('start-date-input');
         const endDateInput = document.getElementById('end-date-input');
-        const supplierSelect = document.getElementById('supplier-select');
+        // Updated variable for the supplier input field
+        const supplierInput = document.getElementById('supplier-input');
         const abcClassSelect = document.getElementById('abc-class-select');
         const kraljicCategorySelect = document.getElementById('kraljic-category-select');
         const itemCount = document.getElementById('item-count');
+        // New elements for filtered total value and percentage
+        const filteredTotalValueElement = document.getElementById('filtered-total-value');
+        const totalValuePercentageElement = document.getElementById('total-value-percentage');
         const sheetSelectionContainer = document.getElementById('sheet-selection-container');
         const sheetSelect = document.getElementById('sheet-select');
         const createGraphBtn = document.getElementById('create-graph-btn');
         const backToResultsLink = document.getElementById('back-to-results-link');
         const abcGraphContainer = document.getElementById('abc-graph');
         const kraljicGraphContainer = document.getElementById('kraljic-graph');
+        // New datalist element for supplier options
+        const supplierDatalist = document.getElementById('supplier-list');
 
         let rawData = [];
         let allSuppliers = new Set();
         let allDates = [];
         let analyzedData = []; 
         let workbook = null; // To store the workbook for multi-sheet selection
+        let grandTotalAnnualConsumptionValue = 0; // New variable to store the total value of all items
 
         // Single item analysis elements
         const totalItemsCountInput = document.getElementById('total-items-count');
@@ -827,98 +879,40 @@
         const singleItemErrorDiv = document.getElementById('single-item-error');
 
 
-        // The CSV data to be downloaded
-        const csvData = `itemName,Document Date,Order Quantity,Order Unit,Net Price,annualConsumptionValue,Name of Supplier,supplyRisk,valueImpact
-,,,,,=C2*E2,,,`;
-        
-        // Function to hide a section and apply transition classes
-        function hideSection(section) {
-            section.classList.remove('is-visible');
-            section.classList.add('hidden');
-        }
-
-        // Function to show a section and apply transition classes
-        function showSection(section) {
-            section.classList.remove('hidden');
-            // Use a slight delay to allow the `hidden` class to be removed before the transition starts
-            setTimeout(() => {
-                section.classList.add('is-visible');
-            }, 10);
-        }
-
         // Function to hide all main sections
         function hideAllSections() {
-            sections.forEach(section => {
-                if (!section.id.includes('hero-section') && !section.id.includes('tools-section')) {
-                    hideSection(section);
-                }
-            });
-            // Handle the home sections explicitly since they are shown together
-            hideSection(document.getElementById('hero-section'));
-            hideSection(document.getElementById('tools-section'));
+            heroSection.classList.add('hidden');
+            toolsSection.classList.add('hidden');
+            aboutSection.classList.add('hidden');
+            contactSection.classList.add('hidden');
+            abcAnalysisSection.classList.add('hidden');
+            kraljicMatrixSection.classList.add('hidden');
+            getStartedSection.classList.add('hidden');
+            batchAnalysisSection.classList.add('hidden');
+            singleItemAnalysisSection.classList.add('hidden');
+            analysisResultsSection.classList.add('hidden');
+            analysisGraphSection.classList.add('hidden');
+            // Hide the mobile menu when navigating
+            mobileMenu.classList.remove('is-open');
+            overlay.classList.remove('is-open');
         }
 
         // Function to show the hero and tools sections
         function showHomeSections() {
             hideAllSections();
-            showSection(document.getElementById('hero-section'));
-            showSection(document.getElementById('tools-section'));
+            heroSection.classList.remove('hidden');
+            toolsSection.classList.remove('hidden');
         }
         
         function showGetStartedSection() {
             hideAllSections();
-            showSection(document.getElementById('get-started-section'));
+            getStartedSection.classList.remove('hidden');
         }
         
         function showContactSection() {
             hideAllSections();
-            showSection(document.getElementById('contact-section'));
+            contactSection.classList.remove('hidden');
         }
-        
-        function showAboutSection() {
-            hideAllSections();
-            showSection(document.getElementById('about-section'));
-        }
-        
-        function showABCAnalysisSection() {
-            hideAllSections();
-            showSection(document.getElementById('abc-analysis-section'));
-        }
-        
-        function showKraljicMatrixSection() {
-            hideAllSections();
-            showSection(document.getElementById('kraljic-matrix-section'));
-        }
-
-        function showBatchAnalysisSection() {
-            hideAllSections();
-            showSection(document.getElementById('batch-analysis-section'));
-        }
-        
-        function showSingleItemAnalysisSection() {
-            hideAllSections();
-            showSection(document.getElementById('single-item-analysis-section'));
-        }
-        
-        function showAnalysisResultsSection() {
-            hideAllSections();
-            showSection(document.getElementById('analysis-results-section'));
-        }
-        
-        function showAnalysisGraphSection() {
-            hideAllSections();
-            showSection(document.getElementById('analysis-graph-section'));
-        }
-        
-        // Event listener for the mobile menu button
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.add('is-open');
-        });
-
-        // Event listener for the close mobile menu button
-        closeMobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.remove('is-open');
-        });
 
         // Function to hide the splash screen and show the main content
         function showMainContent() {
@@ -930,21 +924,37 @@
         }
 
         // Function to handle the file download
-        function downloadFile(data, filename, type) {
-            const blob = new Blob([data], { type: type });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+        function downloadXlsxTemplate() {
+            const header = [
+                "itemName", 
+                "Document Date", 
+                "Order Quantity", 
+                "Order Unit", 
+                "Net Price", 
+                "annualConsumptionValue", 
+                "Name of Supplier", 
+                "supplyRisk", 
+                "valueImpact"
+            ];
+            
+            // Create data for the sheet. The formula for annualConsumptionValue is placed directly.
+            const data = [
+                header,
+                ["", null, null, "", null, { f: "C2*E2" }, "", "", ""]
+            ];
+            
+            const worksheet = XLSX.utils.aoa_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Template");
+            
+            // Write the workbook and trigger the download
+            XLSX.writeFile(workbook, "TOOLZO_Template.xlsx");
         }
 
         // Function to filter the raw data based on current UI state
         function filterData() {
             const searchTerm = generalSearchInput.value.toLowerCase();
+            const supplierTerm = supplierInput.value.toLowerCase();
             const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
             const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
             
@@ -960,8 +970,11 @@
                 const searchMatch = (item.itemName || '').toLowerCase().includes(searchTerm) ||
                                     (item['Name of Supplier'] || '').toLowerCase().includes(searchTerm) ||
                                     (item['Order Unit'] || '').toLowerCase().includes(searchTerm);
+
+                // Check supplier filter
+                const supplierMatch = !supplierTerm || (item['Name of Supplier'] || '').toLowerCase().includes(supplierTerm);
                                     
-                return datesMatch && searchMatch;
+                return datesMatch && searchMatch && supplierMatch;
             });
         }
 
@@ -974,17 +987,20 @@
                     return acc;
                 }
                 const existingItem = acc[item.itemName];
-                const cleanedValue = String(item.annualConsumptionValue || '').replace(/,/g, '');
+                // Check if annualConsumptionValue is a formula string, otherwise treat as a number
+                const value = typeof item.annualConsumptionValue === 'string' && item.annualConsumptionValue.startsWith('=')
+                    ? parseFloat(item.annualConsumptionValue.replace(/[^0-9.]/g, '')) || 0
+                    : parseFloat(String(item.annualConsumptionValue || '').replace(/,/g, '')) || 0;
                 
                 if (existingItem) {
-                    existingItem.annualConsumptionValue += parseFloat(cleanedValue || 0);
+                    existingItem.annualConsumptionValue += value;
                     const itemDate = item['Document Date'] ? new Date(item['Document Date']) : null;
                     if (item['Name of Supplier']) existingItem.suppliers.add(item['Name of Supplier']);
                     if (itemDate && !isNaN(itemDate)) existingItem.dates.add(itemDate.toISOString().split('T')[0]);
                 } else {
                     acc[item.itemName] = { 
                         ...item,
-                        annualConsumptionValue: parseFloat(cleanedValue || 0),
+                        annualConsumptionValue: value,
                         suppliers: item['Name of Supplier'] ? new Set([item['Name of Supplier']]) : new Set(),
                         dates: item['Document Date'] ? new Set([new Date(item['Document Date']).toISOString().split('T')[0]]) : new Set()
                     };
@@ -1033,25 +1049,25 @@
         function displayResults() {
             resultsContainer.innerHTML = ''; // Clear previous results
             
-            const selectedSupplier = supplierSelect.value;
             const selectedABCClass = abcClassSelect.value;
             const selectedKraljicCategory = kraljicCategorySelect.value;
             const searchTerm = generalSearchInput.value.toLowerCase();
+            const supplierTerm = supplierInput.value.toLowerCase();
 
             let itemsToDisplay = analyzedData;
 
             // Apply all filters for display
             itemsToDisplay = itemsToDisplay.filter(item => {
-                const supplierMatch = !selectedSupplier || item.suppliers.has(selectedSupplier);
                 const abcMatch = !selectedABCClass || item.abcClass === selectedABCClass;
                 const kraljicMatch = !selectedKraljicCategory || item.kraljicClass === selectedKraljicCategory;
+                const supplierMatch = !supplierTerm || (Array.from(item.suppliers).join(', ') || '').toLowerCase().includes(supplierTerm);
 
                 // General search term checks all relevant fields
                 const searchMatch = (item.itemName || '').toLowerCase().includes(searchTerm) ||
                                     (Array.from(item.suppliers).join(', ') || '').toLowerCase().includes(searchTerm) ||
                                     (item['Order Unit'] || '').toLowerCase().includes(searchTerm);
 
-                return supplierMatch && abcMatch && kraljicMatch && searchMatch;
+                return abcMatch && kraljicMatch && supplierMatch && searchMatch;
             });
             
             // Apply sorting logic to the items to be displayed
@@ -1091,7 +1107,15 @@
                     break;
             }
             
-            itemCount.textContent = `Showing ${itemsToDisplay.length} unique items.`;
+            // Calculate the total consumption value and percentage for the currently displayed items
+            const filteredTotalValue = itemsToDisplay.reduce((sum, item) => sum + item.annualConsumptionValue, 0);
+            const filteredValuePercentage = grandTotalAnnualConsumptionValue > 0 ? (filteredTotalValue / grandTotalAnnualConsumptionValue) * 100 : 0;
+
+            // Update the display text with the new dynamic values
+            itemCount.textContent = `Showing ${itemsToDisplay.length} items.`;
+            filteredTotalValueElement.textContent = `Total Annual Consumption Value: $${new Intl.NumberFormat('en-US').format(filteredTotalValue.toFixed(2))}`;
+            totalValuePercentageElement.textContent = `Value Percentage of Total: ${filteredValuePercentage.toFixed(6)}%`;
+
 
             if (itemsToDisplay.length === 0) {
                  resultsContainer.innerHTML = '<p class="text-center text-gray-500 col-span-full">No results found with the current filters.</p>';
@@ -1117,6 +1141,10 @@
                 const formattedValue = new Intl.NumberFormat('en-US').format(item.annualConsumptionValue.toFixed(2));
                 const suppliersList = Array.from(item.suppliers).join(', ') || 'N/A';
                 const datesList = Array.from(item.dates).sort().join(', ');
+                
+                // New: Calculate the value percentage for the current item against the filtered total.
+                const itemValuePercentage = filteredTotalValue > 0 ? (item.annualConsumptionValue / filteredTotalValue) * 100 : 0;
+
 
                 card.innerHTML = `
                     <div class="flex items-center justify-between">
@@ -1136,6 +1164,10 @@
                         <h4 class="font-bold text-gray-200 mb-2">Detailed Analysis</h4>
                         <p class="text-gray-300 text-sm mb-2">
                             <span class="font-semibold">Total Value:</span> $${formattedValue}
+                        </p>
+                        <!-- New: Added value percentage to the item card -->
+                        <p class="text-gray-300 text-sm mb-2">
+                            <span class="font-semibold">Value Percentage:</span> ${itemValuePercentage.toFixed(6)}%
                         </p>
                         <p class="text-gray-300 text-sm mb-2">
                             <span class="font-semibold">Suppliers:</span> ${suppliersList}
@@ -1180,62 +1212,77 @@
         }
 
         // --- Core File Processing Logic ---
+        function downloadXlsxTemplate() {
+            const header = [
+                "itemName", 
+                "Document Date", 
+                "Order Quantity", 
+                "Order Unit", 
+                "Net Price", 
+                "annualConsumptionValue", 
+                "Name of Supplier", 
+                "supplyRisk", 
+                "valueImpact"
+            ];
+            
+            // Create data for the sheet. The formula for annualConsumptionValue is placed directly.
+            const data = [
+                header,
+                ["", null, null, "", null, { f: "C2*E2" }, "", "", ""]
+            ];
+            
+            const worksheet = XLSX.utils.aoa_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Template");
+            
+            // Write the workbook and trigger the download
+            XLSX.writeFile(workbook, "TOOLZO_Template.xlsx");
+        }
+
         function processFile(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     try {
-                        if (file.name.endsWith('.xlsx')) {
-                            const binaryStr = e.target.result;
-                            workbook = XLSX.read(binaryStr, { type: 'binary' });
-                            const sheetNames = workbook.SheetNames;
-                            
-                            // Check for multiple sheets and show the selector
-                            if (sheetNames.length > 1) {
-                                sheetSelect.innerHTML = sheetNames.map(name => `<option value="${name}">${name}</option>`).join('');
-                                sheetSelectionContainer.classList.remove('hidden');
-                            } else {
-                                sheetSelectionContainer.classList.add('hidden');
-                            }
-                            
-                            // Resolve the promise, but don't proceed to analysis yet
-                            resolve(workbook);
-                            
-                        } else if (file.name.endsWith('.csv')) {
-                            sheetSelectionContainer.classList.add('hidden');
-                            Papa.parse(e.target.result, {
-                                header: true,
-                                dynamicTyping: true,
-                                complete: function(results) {
-                                    resolve(results.data);
-                                },
-                                error: function(err, file) {
-                                    reject(err);
-                                }
-                            });
-                            return; // Exit early for PapaParse
+                        const binaryStr = e.target.result;
+                        workbook = XLSX.read(binaryStr, { type: 'binary' });
+                        const sheetNames = workbook.SheetNames;
+                        
+                        if (sheetNames.length > 1) {
+                            sheetSelect.innerHTML = sheetNames.map(name => `<option value="${name}">${name}</option>`).join('');
+                            sheetSelectionContainer.classList.remove('hidden');
                         } else {
-                            reject(new Error("Unsupported file type. Please upload a .csv or .xlsx file."));
+                            // No need to show the dropdown for a single sheet
+                            sheetSelectionContainer.classList.add('hidden');
                         }
+                        
+                        resolve(workbook);
+                        
                     } catch (e) {
-                        reject(e);
+                        reject(new Error("An error occurred while parsing the file. Please ensure it is a valid .xlsx file."));
                     }
                 };
                 reader.onerror = reject;
 
-                if (file.name.endsWith('.xlsx')) {
-                    reader.readAsBinaryString(file);
-                } else {
-                    reader.readAsText(file);
-                }
+                reader.readAsBinaryString(file);
             });
         }
 
         function processSheet(sheetName) {
-            if (!workbook) return; // Cannot process without a workbook
-            const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {raw: false, defval: null});
+            if (!workbook) {
+                errorMessage.textContent = "Error: Workbook not found. Please re-upload the file.";
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { raw: false, defval: null });
             if (data.length > 0) {
                 rawData = data;
+                // New: Calculate the grand total consumption value of all raw data
+                grandTotalAnnualConsumptionValue = rawData.reduce((sum, item) => 
+                    sum + (parseFloat(String(item.annualConsumptionValue || '').replace(/,/g, '')) || 0)
+                , 0);
+
                 allSuppliers.clear();
                 allDates = [];
                 rawData.forEach(item => {
@@ -1244,13 +1291,9 @@
                     if (itemDate && !isNaN(itemDate)) allDates.push(itemDate);
                 });
                 const sortedSuppliers = Array.from(allSuppliers).sort();
-                supplierSelect.innerHTML = '<option value="">All Suppliers</option>';
-                sortedSuppliers.forEach(supplier => {
-                    const option = document.createElement('option');
-                    option.value = supplier;
-                    option.textContent = supplier;
-                    supplierSelect.appendChild(option);
-                });
+                // We now populate the datalist for the supplier input
+                supplierDatalist.innerHTML = sortedSuppliers.map(supplier => `<option value="${supplier}">`).join('');
+                
                 if (allDates.length > 0) {
                     const minDate = new Date(Math.min(...allDates));
                     const maxDate = new Date(Math.max(...allDates));
@@ -1260,7 +1303,7 @@
                 
                 renderResults();
                 hideAllSections();
-                showSection(document.getElementById('analysis-results-section'));
+                analysisResultsSection.classList.remove('hidden');
             } else {
                 errorMessage.textContent = "Could not parse data from the selected sheet. Please check the sheet format.";
                 errorMessage.classList.remove('hidden');
@@ -1352,24 +1395,24 @@
         function createGraph() {
             // Filter data based on current UI state
             const filteredData = analyzedData.filter(item => {
-                const selectedSupplier = supplierSelect.value;
                 const selectedABCClass = abcClassSelect.value;
                 const selectedKraljicCategory = kraljicCategorySelect.value;
                 const searchTerm = generalSearchInput.value.toLowerCase();
+                const supplierTerm = supplierInput.value.toLowerCase();
                 const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
                 const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
                 
                 const itemDate = item['Document Date'] ? new Date(item['Document Date']) : null;
                 const datesMatch = (!startDate || (itemDate && itemDate >= startDate)) && (!endDate || (itemDate && itemDate <= endDate));
-                const supplierMatch = !selectedSupplier || item.suppliers.has(selectedSupplier);
                 const abcMatch = !selectedABCClass || item.abcClass === selectedABCClass;
                 const kraljicMatch = !selectedKraljicCategory || item.kraljicClass === selectedKraljicCategory;
 
+                const supplierMatch = !supplierTerm || (Array.from(item.suppliers).join(', ') || '').toLowerCase().includes(supplierTerm);
                 const searchMatch = (item.itemName || '').toLowerCase().includes(searchTerm) ||
                                     (Array.from(item.suppliers).join(', ') || '').toLowerCase().includes(searchTerm) ||
                                     (item['Order Unit'] || '').toLowerCase().includes(searchTerm);
 
-                return datesMatch && supplierMatch && abcMatch && kraljicMatch && searchMatch;
+                return datesMatch && abcMatch && kraljicMatch && supplierMatch && searchMatch;
             });
             
             // Count items per ABC class
@@ -1406,7 +1449,7 @@
 
             // Show the graph section and hide the results section
             hideAllSections();
-            showSection(document.getElementById('analysis-graph-section'));
+            analysisGraphSection.classList.remove('hidden');
         }
 
         function analyzeSingleItem() {
@@ -1473,51 +1516,98 @@
             singleItemResultsDiv.classList.remove('hidden');
         }
         
-        // Navigation links event listeners
-        const navLinks = [
-            { link: homeLink, section: document.getElementById('hero-section') },
-            { link: aboutLink, section: document.getElementById('about-section') },
-            { link: contactLink, section: document.getElementById('contact-section') },
-            { link: mobileHomeLink, section: document.getElementById('hero-section'), mobile: true },
-            { link: mobileAboutLink, section: document.getElementById('about-section'), mobile: true },
-            { link: mobileContactLink, section: document.getElementById('contact-section'), mobile: true },
-            { link: backToHomeLinkAbout, section: document.getElementById('hero-section') },
-            { link: backToHomeLinkContact, section: document.getElementById('hero-section') },
-            { link: abcAnalysisLink, section: document.getElementById('abc-analysis-section') },
-            { link: backToHomeLinkABC, section: document.getElementById('hero-section') },
-            { link: kraljicMatrixLink, section: document.getElementById('kraljic-matrix-section') },
-            { link: backToHomeLinkKraljic, section: document.getElementById('hero-section') },
-            { link: getStartedBtn, section: document.getElementById('get-started-section') },
-            { link: batchAnalysisCard, section: document.getElementById('batch-analysis-section') },
-            { link: singleItemAnalysisCard, section: document.getElementById('single-item-analysis-section') },
-            { link: backToHomeFromGetStartedLink, section: document.getElementById('hero-section') },
-            { link: backToHomeFromBatchLink, section: document.getElementById('hero-section') },
-            { link: backToUploadLink, section: document.getElementById('batch-analysis-section') },
-            { link: backToGetStartedFromSingleLink, section: document.getElementById('get-started-section') },
-            { link: backToResultsLink, section: document.getElementById('analysis-results-section') }
-        ];
+        // Event listeners for navigation links
+        aboutLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            hideAllSections();
+            aboutSection.classList.remove('hidden');
+        });
 
-        navLinks.forEach(item => {
-            if (item.link) {
-                item.link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    // Close the mobile menu if a mobile link was clicked
-                    if (item.mobile) {
-                        mobileMenu.classList.remove('is-open');
-                    }
-                    
-                    // Hide all sections first, then show the target section
-                    hideAllSections();
-                    
-                    // Handle special case for home section (which includes hero and tools)
-                    if (item.section.id === 'hero-section') {
-                        showSection(document.getElementById('hero-section'));
-                        showSection(document.getElementById('tools-section'));
-                    } else {
-                        showSection(item.section);
-                    }
-                });
-            }
+        contactLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showContactSection();
+        });
+
+        homeLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showHomeSections();
+        });
+
+        backToHomeLinkAbout.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showHomeSections();
+        });
+
+        backToHomeLinkContact.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showHomeSections();
+        });
+        
+        abcAnalysisLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            hideAllSections();
+            abcAnalysisSection.classList.remove('hidden');
+        });
+        
+        backToHomeLinkABC.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showHomeSections();
+        });
+
+        kraljicMatrixLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            hideAllSections();
+            kraljicMatrixSection.classList.remove('hidden');
+        });
+        
+        backToHomeLinkKraljic.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showHomeSections();
+        });
+        
+        downloadTemplateLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            downloadXlsxTemplate();
+        });
+
+        downloadTemplateLink2.addEventListener('click', (event) => {
+            event.preventDefault();
+            downloadXlsxTemplate();
+        });
+
+        getStartedBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showGetStartedSection();
+        });
+        
+        singleItemAnalysisCard.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            hideAllSections();
+            singleItemAnalysisSection.classList.remove('hidden');
+        });
+
+        batchAnalysisCard.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            hideAllSections();
+            batchAnalysisSection.classList.remove('hidden');
+        });
+        
+        backToGetStartedFromSingleLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showGetStartedSection();
         });
         
         // This new event listener for the file input handles the initial file load and UI update
@@ -1530,7 +1620,10 @@
             errorMessage.classList.add('hidden');
             
             try {
+                // Process the file to get the workbook object
                 await processFile(file);
+                // The `processFile` function will now set `workbook`.
+                // We'll let the `uploadBtn` handle calling `processSheet`.
             } catch (e) {
                 errorMessage.textContent = `An error occurred: ${e.message}`;
                 errorMessage.classList.remove('hidden');
@@ -1539,11 +1632,10 @@
             }
         });
 
-        // The "Analyze File" button now only processes the sheet if a file has been loaded
+        // The "Analyze File" button now handles both single and multi-sheet scenarios
         uploadBtn.addEventListener('click', async (event) => {
             event.preventDefault();
-            const file = excelFileInput.files[0];
-            if (!file) {
+            if (!workbook) {
                 errorMessage.textContent = "Please select a file to analyze.";
                 errorMessage.classList.remove('hidden');
                 return;
@@ -1553,23 +1645,19 @@
             errorMessage.classList.add('hidden');
 
             try {
-                if (file.name.endsWith('.xlsx')) {
-                    const selectedSheet = sheetSelect.value;
-                    if (workbook && selectedSheet) {
-                        processSheet(selectedSheet);
-                    } else {
-                        errorMessage.textContent = "Please select a sheet to analyze.";
-                        errorMessage.classList.remove('hidden');
-                    }
-                } else if (file.name.endsWith('.csv')) {
-                    const data = Papa.parse(await file.text(), { header: true, dynamicTyping: true }).data;
-                    if (data && data.length > 0) {
-                        rawData = data;
-                        processSheet(null); // Process the entire CSV as a single sheet
-                    } else {
-                        errorMessage.textContent = "Could not parse data from the CSV file.";
-                        errorMessage.classList.remove('hidden');
-                    }
+                let selectedSheet;
+                // If the sheet selection dropdown is hidden, it means there's only one sheet.
+                if (sheetSelectionContainer.classList.contains('hidden')) {
+                    selectedSheet = workbook.SheetNames[0];
+                } else {
+                    selectedSheet = sheetSelect.value;
+                }
+
+                if (selectedSheet) {
+                    processSheet(selectedSheet);
+                } else {
+                    errorMessage.textContent = "Please select a sheet to analyze.";
+                    errorMessage.classList.remove('hidden');
                 }
             } catch (e) {
                 errorMessage.textContent = `An error occurred: ${e.message}`;
@@ -1585,19 +1673,86 @@
             clearTimeout(this.debounceTimer);
             this.debounceTimer = setTimeout(renderResults, 300);
         });
+
+        // New event listener for the supplier text input
+        supplierInput.addEventListener('input', () => {
+             // Delay the rendering to avoid performance issues while typing
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(renderResults, 300);
+        });
         
         // Event listeners for sorting and filtering
         sortSelect.addEventListener('change', displayResults);
         startDateInput.addEventListener('change', renderResults);
         endDateInput.addEventListener('change', renderResults);
-        supplierSelect.addEventListener('change', displayResults);
         abcClassSelect.addEventListener('change', displayResults);
         kraljicCategorySelect.addEventListener('change', displayResults);
         createGraphBtn.addEventListener('click', createGraph);
+        backToResultsLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            hideAllSections();
+            analysisResultsSection.classList.remove('hidden');
+        });
 
+        backToHomeFromGetStartedLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showHomeSections();
+        });
+
+        backToHomeFromBatchLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showHomeSections();
+        });
+
+        backToUploadLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            hideAllSections();
+            batchAnalysisSection.classList.remove('hidden');
+        });
         
         // Event listener for single item analysis
         categorizeBtn.addEventListener('click', analyzeSingleItem);
+        
+        // Mobile menu toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('is-open');
+            overlay.classList.add('is-open');
+        });
+        
+        mobileMenuCloseBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('is-open');
+            overlay.classList.remove('is-open');
+        });
+        
+        overlay.addEventListener('click', () => {
+            mobileMenu.classList.remove('is-open');
+            overlay.classList.remove('is-open');
+        });
+        
+        // Event listeners for mobile menu links (they also close the menu)
+        mobileHomeLink.addEventListener('click', (event) => {
+             event.preventDefault();
+             window.scrollTo(0, 0);
+             showHomeSections();
+        });
+        
+        mobileAboutLink.addEventListener('click', (event) => {
+             event.preventDefault();
+             window.scrollTo(0, 0);
+             hideAllSections();
+             aboutSection.classList.remove('hidden');
+        });
+        
+        mobileContactLink.addEventListener('click', (event) => {
+             event.preventDefault();
+             window.scrollTo(0, 0);
+             showContactSection();
+        });
+
 
         // Use a setTimeout to control the duration of the animation before hiding the splash screen
         window.onload = function() {
@@ -1606,6 +1761,3 @@
     </script>
 </body>
 </html>
-
-
-
