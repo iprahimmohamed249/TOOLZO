@@ -665,9 +665,9 @@
                         <!-- Updated image source to use a reliable placeholder -->
                          <img src="https://live.staticflickr.com/65535/54755016067_39f47bc607_b.jpg" onerror="this.src='https://placehold.co/1024x1024/9d50bb/ffffff?text=IE'" alt="Ibrahim Elhusseiny" class="w-32 h-32 mx-auto rounded-full object-cover mb-4">
                         <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Ibrahim Elhusseiny</h3>
-                        <p class="text-gray-400 text-sm mb-4">Ibrahimelhusseiny@gmail.com</p>
+                        <p class="text-gray-400 text-sm mb-4">Iprahimelhusseiny@gmail.com</p>
                         <p class="text-gray-300 text-md">
-                            A highly skilled developer who led the front-end implementation and user interface design of the platform.
+                            Senior pharmacy student at Cairo University with experience in both community pharmacy and sales.
                         </p>
                     </div>
 
@@ -678,7 +678,8 @@
                         <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Farida Salama</h3>
                         <p class="text-gray-400 text-sm mb-4">Salamaahmedfarida@gmail.com</p>
                         <p class="text-gray-300 text-md">
-                            A dedicated developer specializing in back-end logic and data processing, ensuring the tool's core functions are robust and efficient.
+                            Logistics and Supply Chain Management student at the Arab Academy for Science and Technology, FIATA
+Certified in Transportation.
                         </p>
                     </div>
 
@@ -689,7 +690,7 @@
                         <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Galaluddin Shahin</h3>
                         <p class="text-gray-400 text-sm mb-4">Galal.e.shahin@Gmail.com</p>
                         <p class="text-gray-300 text-md">
-                            The project supervisor, who provided expert guidance and oversight throughout the development lifecycle to ensure high-quality standards.
+                            Experienced Procurement Specialist with 8+ years in healthcare. I use my pharmacy and MBA skills to cut costs, find new suppliers, and manage contracts. Also certified in Strategic Procurement (AUC).
                         </p>
                     </div>
                 </div>
@@ -724,7 +725,7 @@
                        <!-- SVG Chart for ABC Analysis -->
                        <svg class="w-full max-w-lg" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
                            <!-- Background and Gridlines -->
-                           <rect width="100%" height="100%" fill="#1E1E2D" rx="10" ry="10"/>
+                           <rect width="100%" height="100%" fill="#1E1E2D" rx="10" ry="10" />
                            <line x1="100" y1="50" x2="100" y2="350" stroke="#4B5563" stroke-width="2" />
                            <line x1="100" y1="350" x2="550" y2="350" stroke="#4B5563" stroke-width="2" />
                            
@@ -932,6 +933,24 @@
         const abcResultSpan = document.getElementById('abc-result');
         const kraljicResultSpan = document.getElementById('kraljic-result');
         const singleItemErrorDiv = document.getElementById('single-item-error');
+        
+        // Recommended Strategy for A-class items
+        /* A+Strategic: critical item, secure long-term contracts, monitor supply chain risks */
+        /* A+Leverage: use volume to negotiate and optimize supplier relationships */
+        /* A+Bottleneck: develop backup suppliers, increase safety stock */
+        /* A+Non-Critical: not real */
+
+        // Recommended Strategy for B-class items
+        /* B+Strategic: maintain supplier relationships */
+        /* B+Leverage: regularly benchmark prices */
+        /* B+Bottleneck: keep a safety buffer and alternative suppliers */
+        /* B+Non-Critical: standardize purchasing, keep lean and efficient, automated */
+
+        // Recommended Strategy for C-class items
+        /* C+Strategic: avoid over investment */
+        /* C+Leverage: bundle purchases for efficiency */
+        /* C+Bottleneck: hold minimal safety stock */
+        /* C+Non-Critical: low priority, standardize purchasing, keep lean and efficient */
 
         // Function to hide all main sections
         function hideAllSections() {
@@ -1079,7 +1098,7 @@
                 if (supplyRisk === 'low' && valueImpact === 'low') {
                     item.kraljicClass = 'Non-Critical';
                 } else if (supplyRisk === 'low' && valueImpact === 'high') {
-                    item.kraljicClass = 'Leverage';
+                    kraljicClass = 'Leverage';
                 } else if (supplyRisk === 'high' && valueImpact === 'low') {
                     item.kraljicClass = 'Bottleneck';
                 } else if (supplyRisk === 'high' && valueImpact === 'high') {
@@ -1211,6 +1230,33 @@
                 const itemValuePercentage = totalValueForDateRange > 0 ? (item.annualConsumptionValue / totalValueForDateRange) * 100 : 0;
 
 
+                let recommendedStrategy = '';
+                if (item.abcClass === 'A' && item.kraljicClass === 'Strategic') {
+                    recommendedStrategy = 'A+Strategic: critical item, secure long-term contracts, monitor supply chain risks';
+                } else if (item.abcClass === 'A' && item.kraljicClass === 'Leverage') {
+                    recommendedStrategy = 'A+Leverage: use volume to negotiate and optimize supplier relationships';
+                } else if (item.abcClass === 'A' && item.kraljicClass === 'Bottleneck') {
+                    recommendedStrategy = 'A+Bottleneck: develop backup suppliers, increase safety stock';
+                } else if (item.abcClass === 'A' && item.kraljicClass === 'Non-Critical') {
+                    recommendedStrategy = 'A+Non-Critical: Not Real';
+                } else if (item.abcClass === 'B' && item.kraljicClass === 'Strategic') {
+                    recommendedStrategy = 'B+Strategic: maintain supplier relationships';
+                } else if (item.abcClass === 'B' && item.kraljicClass === 'Leverage') {
+                    recommendedStrategy = 'B+Leverage: regularly benchmark prices';
+                } else if (item.abcClass === 'B' && item.kraljicClass === 'Bottleneck') {
+                    recommendedStrategy = 'B+Bottleneck: keep a safety buffer and alternative suppliers';
+                } else if (item.abcClass === 'B' && item.kraljicClass === 'Non-Critical') {
+                    recommendedStrategy = 'B+Non-Critical: standardize purchasing, keep lean and efficient, automated';
+                } else if (item.abcClass === 'C' && item.kraljicClass === 'Strategic') {
+                    recommendedStrategy = 'C+Strategic: avoid over investment';
+                } else if (item.abcClass === 'C' && item.kraljicClass === 'Leverage') {
+                    recommendedStrategy = 'C+Leverage: bundle purchases for efficiency';
+                } else if (item.abcClass === 'C' && item.kraljicClass === 'Bottleneck') {
+                    recommendedStrategy = 'C+Bottleneck: hold minimal safety stock';
+                } else if (item.abcClass === 'C' && item.kraljicClass === 'Non-Critical') {
+                    recommendedStrategy = 'C+Non-Critical: low priority, standardize purchasing, keep lean and efficient';
+                }
+
                 card.innerHTML = `
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500 truncate">${item.itemName}</h3>
@@ -1243,12 +1289,8 @@
                          <p class="text-gray-300 text-sm mb-2">
                             <span class="font-semibold">Original value impact:</span> ${item.valueImpact}
                         </p>
-                         <p class="text-gray-300 text-sm mb-2">
-                            <span class="font-semibold">Analysis Date(s):</span> ${datesList}
-                        </p>
-                        
-                        <p class="text-gray-300 text-sm mt-4">
-                            <strong>Summary:</strong> Based on the ABC Analysis, this item is a <span class="${abcColor}">${item.abcClass}</span> product, indicating its importance to the overall value of your inventory. According to the Kraljic Matrix, it falls under the <span class="${kraljicColor}">${item.kraljicClass}</span> category, which suggests a strategic approach is needed based on its profit impact and supply risk.
+                         <p class="text-gray-300 text-sm mt-4">
+                            <strong>Recommended Strategy:</strong> ${recommendedStrategy}
                         </p>
                     </div>
                 `;
