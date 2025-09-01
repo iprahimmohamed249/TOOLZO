@@ -613,9 +613,11 @@
                 <a href="#" id="back-to-results-link" class="mb-8 block text-blue-400 hover:text-blue-300 transition-colors font-medium">
                     &larr; Back to Results
                 </a>
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-purple-400">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-purple-400">
                     Visual Analysis
                 </h2>
+                <!-- New element to display the total value for the entire section -->
+                <div id="total-value-graph-display" class="text-center text-lg font-semibold text-gray-300 mb-8"></div>
                 <!-- Graph containers - changed to md:grid-cols-2 for tablet support -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                     <div id="abc-graph-container" class="bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-700">
@@ -910,6 +912,7 @@ Certified in Transportation.
         const kraljicGraphContainer = document.getElementById('kraljic-graph');
         // New datalist element for supplier options
         const supplierDatalist = document.getElementById('supplier-list');
+        const totalValueGraphDisplay = document.getElementById('total-value-graph-display');
 
         let rawData = [];
         let allSuppliers = new Set();
@@ -1452,7 +1455,7 @@ Certified in Transportation.
         // --- End Core File Processing Logic ---
         
         // --- Graphing Logic ---
-        function createBarChart(containerId, data, barColors, labels, totalValue) {
+        function createBarChart(containerId, data, barColors, labels) {
             const container = document.getElementById(containerId);
             container.innerHTML = ''; // Clear previous graph
             const categories = Object.keys(data);
@@ -1482,12 +1485,6 @@ Certified in Transportation.
             const xScale = (val) => (val / maxValue) * (width - 150);
             const yScale = (index) => (index * (barHeight + barSpacing));
             const barHeight = (height - (categories.length - 1) * barSpacing) / categories.length;
-
-            // Total value display
-            const totalValueDiv = document.createElement('div');
-            totalValueDiv.className = 'text-center text-lg font-semibold text-gray-300 mb-4';
-            totalValueDiv.textContent = `Total Value: EGP ${new Intl.NumberFormat('en-US').format(totalValue.toFixed(2))}`;
-            container.parentNode.insertBefore(totalValueDiv, container);
             
             const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             svg.setAttribute('width', '100%');
@@ -1568,6 +1565,9 @@ Certified in Transportation.
             });
             
             const totalValue = filteredData.reduce((sum, item) => sum + item.annualConsumptionValue, 0);
+
+            // Set the single total value for the section
+            totalValueGraphDisplay.textContent = `Total Value: EGP ${new Intl.NumberFormat('en-US').format(totalValue.toFixed(2))}`;
 
             // Count items and sum values per ABC class
             const abcData = filteredData.reduce((acc, item) => {
