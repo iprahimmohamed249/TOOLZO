@@ -188,6 +188,50 @@
             opacity: 1;
             visibility: visible;
         }
+        
+        /* Custom styles for the new bar chart. */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            padding-bottom: 2rem;
+            overflow-x: auto;
+        }
+        
+        .chart-container svg {
+            width: 100%;
+            height: auto;
+        }
+        
+        .x-axis-label {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            color: #9CA3AF;
+        }
+
+        .y-axis-label {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: rotate(-90deg) translateY(-50%);
+            transform-origin: 0 0;
+            font-size: 1rem;
+            color: #9CA3AF;
+            white-space: nowrap;
+        }
+        
+        /* Style for the text on the bar charts to prevent overflow */
+        .bar-label {
+            white-space: nowrap;
+            overflow: visible;
+            text-overflow: clip;
+            font-size: 12px;
+            fill: #E5E7EB;
+        }
 
     </style>
 </head>
@@ -218,7 +262,7 @@
                     <circle cx="175" cy="100" r="7" fill="#9d50bb"/>
                     <circle cx="175" cy="105" r="7" fill="#61045f"/>
                     <circle cx="175" cy="95" r="7" fill="#2b5876"/>
-                    <circle cx="175" cy="110" r="7" fill="#4e4376"/>
+                    <circle cx="175" cy="110" r='7' fill="#4e4376"/>
                     <circle cx="175" cy="90" r="7" fill="#8605d8"/>
                 </g>
             </svg>
@@ -491,11 +535,9 @@
                 </h2>
                 <!-- Advanced Search and Sort Controls -->
                 <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 max-w-4xl mx-auto">
+                    <!-- The general search input you requested is already here. -->
                     <input type="text" id="general-search-input" placeholder="Search by item, supplier, or unit..." class="flex-grow p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
                     <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
-                        <button id="create-graph-btn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-full shadow-lg transform transition-transform duration-200 hover:scale-105 w-full sm:w-auto mt-4 sm:mt-0">
-                            Create Graph
-                        </button>
                         <select id="sort-select" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500">
                             <option value="name-asc">Name (A-Z)</option>
                             <option value="name-desc">Name (Z-A)</option>
@@ -514,10 +556,12 @@
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 max-w-4xl mx-auto">
                     <div class="flex items-center gap-2 w-full sm:w-1/2">
                         <span class="text-gray-400 whitespace-nowrap">From:</span>
+                        <!-- Changing these date inputs will dynamically update the "Total Annual Consumption Value" -->
                         <input type="date" id="start-date-input" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full">
                     </div>
                     <div class="flex items-center gap-2 w-full sm:w-1/2">
                         <span class="text-gray-400 whitespace-nowrap">To:</span>
+                        <!-- This input also affects the total value calculation. -->
                         <input type="date" id="end-date-input" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full">
                     </div>
                     <!-- Updated the supplier filter to a text input with a datalist -->
@@ -528,7 +572,7 @@
                         </datalist>
                     </div>
                 </div>
-                <!-- New Category Filters -->
+                <!-- New Category Filters and action buttons -->
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 max-w-4xl mx-auto">
                     <select id="abc-class-select" class="p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full sm:w-1/2">
                         <option value="">All ABC Classes</option>
@@ -543,10 +587,18 @@
                         <option value="Bottleneck">Bottleneck</option>
                         <option value="Non-Critical">Non-Critical</option>
                     </select>
+                    <button id="create-graph-btn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-6 rounded-full shadow-lg transform transition-transform duration-200 hover:scale-105 w-full sm:w-auto mt-4 sm:mt-0">
+                        Create Graph
+                    </button>
+                    <button id="download-results-btn" class="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-full shadow-lg transform transition-transform duration-200 hover:scale-105 w-full sm:w-auto mt-4 sm:mt-0">
+                        Download Results
+                    </button>
                 </div>
                 <!-- Item count and total value display -->
                 <div id="item-count" class="text-center text-sm text-gray-400 mb-4"></div>
+                <!-- This value dynamically updates based on the date range and all other filters. -->
                 <div id="filtered-total-value" class="text-center text-sm text-gray-400 mb-4"></div>
+                <!-- This value shows the percentage of the current total vs. the total for the selected date range. -->
                 <div id="total-value-percentage" class="text-center text-sm text-gray-400 mb-4"></div>
                 <!-- Results container - changed to md:grid-cols-2 for tablet support -->
                 <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -561,7 +613,7 @@
                 <a href="#" id="back-to-results-link" class="mb-8 block text-blue-400 hover:text-blue-300 transition-colors font-medium">
                     &larr; Back to Results
                 </a>
-                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-purple-400">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-purple-400">
                     Visual Analysis
                 </h2>
                 <!-- Graph containers - changed to md:grid-cols-2 for tablet support -->
@@ -586,7 +638,7 @@
                 </h2>
                 <div class="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 max-w-3xl mx-auto">
                     <p class="text-gray-300 text-lg mb-6 leading-relaxed">
-                        This tool was professionally developed as part of a collaborative project to assist with the categorization of the Kraljic Matrix and ABC categories.
+                        This professional-grade tool was developed as a training project at AMG Company. It was created to streamline the categorization of the Kraljic Matrix and ABC categories.
                     </p>
                     <p class="text-gray-300 text-lg mb-6 leading-relaxed">
                         The project was led by the talented developers, <span class="text-purple-400 font-bold">Ibrahim Elhusseiny</span> and <span class="text-purple-400 font-bold">Farida Salama</span>. Their work was meticulously supervised by <span class="text-blue-400 font-bold">Dr. Galaluddin Shahin</span>.
@@ -851,7 +903,8 @@
         const sheetSelectionContainer = document.getElementById('sheet-selection-container');
         const sheetSelect = document.getElementById('sheet-select');
         const createGraphBtn = document.getElementById('create-graph-btn');
-        const backToResultsLink = document.getElementById('back-to-results-link');
+        const downloadResultsBtn = document.getElementById('download-results-btn');
+        const backToResultsLink = document = document.getElementById('back-to-results-link');
         const abcGraphContainer = document.getElementById('abc-graph');
         const kraljicGraphContainer = document.getElementById('kraljic-graph');
         // New datalist element for supplier options
@@ -861,8 +914,10 @@
         let allSuppliers = new Set();
         let allDates = [];
         let analyzedData = []; 
+        let exportData = []; // New array to hold data for export
         let workbook = null; // To store the workbook for multi-sheet selection
         let grandTotalAnnualConsumptionValue = 0; // New variable to store the total value of all items
+        let totalValueForDateRange = 0; // The total value for the currently selected date range
 
         // Single item analysis elements
         const totalItemsCountInput = document.getElementById('total-items-count');
@@ -877,7 +932,6 @@
         const abcResultSpan = document.getElementById('abc-result');
         const kraljicResultSpan = document.getElementById('kraljic-result');
         const singleItemErrorDiv = document.getElementById('single-item-error');
-
 
         // Function to hide all main sections
         function hideAllSections() {
@@ -951,8 +1005,8 @@
             XLSX.writeFile(workbook, "TOOLZO_Template.xlsx");
         }
 
-        // Function to filter the raw data based on current UI state
-        function filterData() {
+        // Function to filter raw data by date, search, and supplier.
+        function filterDataForAnalysis() {
             const searchTerm = generalSearchInput.value.toLowerCase();
             const supplierTerm = supplierInput.value.toLowerCase();
             const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
@@ -961,33 +1015,25 @@
             return rawData.filter(item => {
                 const itemDate = item['Document Date'] ? new Date(item['Document Date']) : null;
 
-                // Check date range
                 const isAfterStart = !startDate || (itemDate && itemDate >= startDate);
                 const isBeforeEnd = !endDate || (itemDate && itemDate <= endDate);
                 const datesMatch = isAfterStart && isBeforeEnd;
                 
-                // Check general search term against multiple fields
                 const searchMatch = (item.itemName || '').toLowerCase().includes(searchTerm) ||
                                     (item['Name of Supplier'] || '').toLowerCase().includes(searchTerm) ||
                                     (item['Order Unit'] || '').toLowerCase().includes(searchTerm);
 
-                // Check supplier filter
                 const supplierMatch = !supplierTerm || (item['Name of Supplier'] || '').toLowerCase().includes(supplierTerm);
                                     
                 return datesMatch && searchMatch && supplierMatch;
             });
         }
 
-        // Function to perform analysis and store results
+        // Function to perform ABC and Kraljic analysis on a given dataset.
         function performAnalysis(data) {
-            // Consolidate filtered data by itemName
             const consolidatedData = data.reduce((acc, item) => {
-                // Ignore rows without an item name
-                if (!item.itemName) {
-                    return acc;
-                }
+                if (!item.itemName) return acc;
                 const existingItem = acc[item.itemName];
-                // Check if annualConsumptionValue is a formula string, otherwise treat as a number
                 const value = typeof item.annualConsumptionValue === 'string' && item.annualConsumptionValue.startsWith('=')
                     ? parseFloat(item.annualConsumptionValue.replace(/[^0-9.]/g, '')) || 0
                     : parseFloat(String(item.annualConsumptionValue || '').replace(/,/g, '')) || 0;
@@ -1042,10 +1088,26 @@
                     item.kraljicClass = 'N/A';
                 }
             });
+            
+            // Store the consolidated data for the UI
             analyzedData = tempAnalyzedData;
+            
+            // Prepare data for export - preserving original rows and adding new columns
+            const consolidatedMap = new Map(analyzedData.map(item => [item.itemName, item]));
+            exportData = data.map(item => {
+                const consolidatedItem = consolidatedMap.get(item.itemName);
+                if (consolidatedItem) {
+                    return {
+                        ...item,
+                        "ABC Class": consolidatedItem.abcClass,
+                        "Kraljic Category": consolidatedItem.kraljicClass
+                    };
+                }
+                return { ...item, "ABC Class": 'N/A', "Kraljic Category": 'N/A' };
+            });
         }
         
-        // Function to display the results based on current filters
+        // Function to display the results based on current UI state
         function displayResults() {
             resultsContainer.innerHTML = ''; // Clear previous results
             
@@ -1054,23 +1116,21 @@
             const searchTerm = generalSearchInput.value.toLowerCase();
             const supplierTerm = supplierInput.value.toLowerCase();
 
-            let itemsToDisplay = analyzedData;
-
-            // Apply all filters for display
-            itemsToDisplay = itemsToDisplay.filter(item => {
+            // Filter by category, search term, and supplier from the pre-analyzed data
+            let itemsToDisplay = analyzedData.filter(item => {
                 const abcMatch = !selectedABCClass || item.abcClass === selectedABCClass;
                 const kraljicMatch = !selectedKraljicCategory || item.kraljicClass === selectedKraljicCategory;
-                const supplierMatch = !supplierTerm || (Array.from(item.suppliers).join(', ') || '').toLowerCase().includes(supplierTerm);
 
-                // General search term checks all relevant fields
                 const searchMatch = (item.itemName || '').toLowerCase().includes(searchTerm) ||
                                     (Array.from(item.suppliers).join(', ') || '').toLowerCase().includes(searchTerm) ||
                                     (item['Order Unit'] || '').toLowerCase().includes(searchTerm);
 
-                return abcMatch && kraljicMatch && supplierMatch && searchMatch;
+                const supplierMatch = !supplierTerm || (Array.from(item.suppliers).join(', ') || '').toLowerCase().includes(supplierTerm);
+                                    
+                return abcMatch && kraljicMatch && searchMatch && supplierMatch;
             });
             
-            // Apply sorting logic to the items to be displayed
+            // Apply sorting logic
             const sortBy = sortSelect.value;
             switch (sortBy) {
                 case 'name-asc':
@@ -1107,14 +1167,19 @@
                     break;
             }
             
-            // Calculate the total consumption value and percentage for the currently displayed items
+            // Calculate the total consumption value for the currently displayed items
             const filteredTotalValue = itemsToDisplay.reduce((sum, item) => sum + item.annualConsumptionValue, 0);
-            const filteredValuePercentage = grandTotalAnnualConsumptionValue > 0 ? (filteredTotalValue / grandTotalAnnualConsumptionValue) * 100 : 0;
+            
+            // The base value for the percentage calculation is now the dynamic total for the date range.
+            const baseValueForPercentage = totalValueForDateRange;
+            
+            const filteredValuePercentage = baseValueForPercentage > 0 ? (filteredTotalValue / baseValueForPercentage) * 100 : 0;
 
             // Update the display text with the new dynamic values
             itemCount.textContent = `Showing ${itemsToDisplay.length} items.`;
-            filteredTotalValueElement.textContent = `Total Annual Consumption Value: $${new Intl.NumberFormat('en-US').format(filteredTotalValue.toFixed(2))}`;
-            totalValuePercentageElement.textContent = `Value Percentage of Total: ${filteredValuePercentage.toFixed(6)}%`;
+            // The Total Annual Consumption Value now only changes with the date interval.
+            filteredTotalValueElement.textContent = `Total Annual Consumption Value: EGP ${new Intl.NumberFormat('en-US').format(baseValueForPercentage.toFixed(2))}`;
+            totalValuePercentageElement.textContent = `Value Percentage of Filtered Items: ${filteredValuePercentage.toFixed(6)}%`;
 
 
             if (itemsToDisplay.length === 0) {
@@ -1142,8 +1207,8 @@
                 const suppliersList = Array.from(item.suppliers).join(', ') || 'N/A';
                 const datesList = Array.from(item.dates).sort().join(', ');
                 
-                // New: Calculate the value percentage for the current item against the filtered total.
-                const itemValuePercentage = filteredTotalValue > 0 ? (item.annualConsumptionValue / filteredTotalValue) * 100 : 0;
+                // New: Calculate the value percentage for the current item against the dynamic total value for the date range.
+                const itemValuePercentage = totalValueForDateRange > 0 ? (item.annualConsumptionValue / totalValueForDateRange) * 100 : 0;
 
 
                 card.innerHTML = `
@@ -1163,7 +1228,7 @@
                         <hr class="border-gray-700 my-4">
                         <h4 class="font-bold text-gray-200 mb-2">Detailed Analysis</h4>
                         <p class="text-gray-300 text-sm mb-2">
-                            <span class="font-semibold">Total Value:</span> $${formattedValue}
+                            <span class="font-semibold">Total Value:</span> EGP ${formattedValue}
                         </p>
                         <!-- New: Added value percentage to the item card -->
                         <p class="text-gray-300 text-sm mb-2">
@@ -1202,13 +1267,46 @@
                 });
             });
         }
+
+        // New function to handle the download of the analyzed data
+        function downloadAnalyzedResults() {
+            if (exportData.length === 0) {
+                alert('No data to download. Please upload a file and run the analysis first.');
+                return;
+            }
+
+            const header = Object.keys(exportData[0]); // Get the headers from the first object
+            const worksheet = XLSX.utils.json_to_sheet(exportData, { header: header });
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Analysis Results");
+            
+            // Write the workbook and trigger the download
+            XLSX.writeFile(workbook, "TOOLZO_Analyzed_Data.xlsx");
+        }
         
-        // Main function to trigger filtering and rendering
-        function renderResults() {
-            // Re-analyze data only if a date or general search term changes
-            performAnalysis(filterData());
-            // Then, display the results based on all filters
-            displayResults();
+        // This function handles filtering by date range, then performing the analysis on that subset.
+        function handleDateRangeChange() {
+             const tempFilteredData = rawData.filter(item => {
+                const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+                const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+                const itemDate = item['Document Date'] ? new Date(item['Document Date']) : null;
+                const isAfterStart = !startDate || (itemDate && itemDate >= startDate);
+                const isBeforeEnd = !endDate || (itemDate && itemDate <= endDate);
+                return isAfterStart && isBeforeEnd;
+            });
+             // Calculate the total value of this initially filtered set.
+             totalValueForDateRange = tempFilteredData.reduce((sum, item) => 
+                 sum + (parseFloat(String(item.annualConsumptionValue || '').replace(/,/g, '')) || 0), 0);
+            
+             performAnalysis(tempFilteredData);
+             displayResults();
+        }
+
+        // This function handles filters that don't affect the base total value (like search, supplier, category)
+        function handleOtherFilters() {
+             // Delay the rendering to avoid performance issues while typing
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(displayResults, 300);
         }
 
         // --- Core File Processing Logic ---
@@ -1301,7 +1399,7 @@
                     endDateInput.value = maxDate.toISOString().split('T')[0];
                 }
                 
-                renderResults();
+                handleDateRangeChange();
                 hideAllSections();
                 analysisResultsSection.classList.remove('hidden');
             } else {
@@ -1312,85 +1410,97 @@
         // --- End Core File Processing Logic ---
         
         // --- Graphing Logic ---
-        function createBarChart(containerId, data, barColors) {
+        function createBarChart(containerId, data, barColors, labels, totalValue) {
             const container = document.getElementById(containerId);
             container.innerHTML = ''; // Clear previous graph
-            if (Object.keys(data).length === 0) {
+            const categories = Object.keys(data);
+            if (categories.length === 0) {
                 container.innerHTML = `<p class="text-center text-gray-500">No data available for this chart with the current filters.</p>`;
                 return;
             }
 
+            // Sort categories for consistent display
+            categories.sort((a,b) => (labels[a] || a).localeCompare(labels[b] || b));
+
+            const values = categories.map(key => data[key].value);
+            const percentages = categories.map(key => data[key].percentage);
+            const counts = categories.map(key => data[key].count);
+
+            const maxValue = Math.max(...values);
+            const maxCount = Math.max(...counts);
+
             const width = 500;
             const height = 300;
-            const margin = { top: 20, right: 20, bottom: 50, left: 100 }; // Increased left margin
+            const margin = { top: 40, right: 20, bottom: 50, left: 150 }; // Increased left and top margins
             const svgWidth = width + margin.left + margin.right;
             const svgHeight = height + margin.top + margin.bottom;
+            const barSpacing = 10;
+            const textSpacing = 10;
 
-            const maxCount = Math.max(...Object.values(data));
-            const xScale = (count) => (count / maxCount) * width;
-            const yScale = (index) => (index * height) / Object.keys(data).length;
-            const barHeight = height / Object.keys(data).length - 10;
-            const categories = Object.keys(data);
-            const counts = Object.values(data);
+            const xScale = (val) => (val / maxValue) * (width - 150);
+            const yScale = (index) => (index * (barHeight + barSpacing));
+            const barHeight = (height - (categories.length - 1) * barSpacing) / categories.length;
 
+            // Total value display
+            const totalValueDiv = document.createElement('div');
+            totalValueDiv.className = 'text-center text-lg font-semibold text-gray-300 mb-4';
+            totalValueDiv.textContent = `Total Value: EGP ${new Intl.NumberFormat('en-US').format(totalValue.toFixed(2))}`;
+            container.parentNode.insertBefore(totalValueDiv, container);
+            
             const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             svg.setAttribute('width', '100%');
             svg.setAttribute('height', '100%');
             svg.setAttribute('viewBox', `0 0 ${svgWidth} ${svgHeight}`);
             svg.style.backgroundColor = 'transparent';
             
-            // X-axis and labels (horizontal)
-            const xAxisY = height + margin.top;
-            const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            xAxis.setAttribute('x1', margin.left);
-            xAxis.setAttribute('y1', xAxisY);
-            xAxis.setAttribute('x2', width + margin.left);
-            xAxis.setAttribute('y2', xAxisY);
-            xAxis.setAttribute('stroke', '#4B5563');
-            svg.appendChild(xAxis);
-            
-            // Y-axis labels (vertical)
-            categories.forEach((category, i) => {
-                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                label.setAttribute('x', margin.left - 5);
-                label.setAttribute('y', yScale(i) + barHeight / 2);
-                label.setAttribute('dy', '0.35em');
-                label.setAttribute('font-family', 'Inter, sans-serif');
-                label.setAttribute('font-size', '12');
-                label.setAttribute('fill', '#9CA3AF');
-                label.setAttribute('text-anchor', 'end');
-                label.textContent = category;
-                svg.appendChild(label);
-            });
-
-            // Bars
+            // Bars and labels
             categories.forEach((category, i) => {
                 const bar = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
                 bar.setAttribute('x', margin.left);
-                bar.setAttribute('y', yScale(i));
-                bar.setAttribute('width', xScale(counts[i]));
+                bar.setAttribute('y', yScale(i) + margin.top);
+                bar.setAttribute('width', xScale(values[i]));
                 bar.setAttribute('height', barHeight);
                 bar.setAttribute('fill', barColors[category] || '#9CA3AF');
                 bar.setAttribute('rx', 5);
                 bar.setAttribute('ry', 5);
                 svg.appendChild(bar);
-            });
-            
-            // Value labels on bars
-            counts.forEach((count, i) => {
+                
                 const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                label.setAttribute('x', margin.left + xScale(count) + 5);
-                label.setAttribute('y', yScale(i) + barHeight / 2);
+                label.setAttribute('x', margin.left - 10);
+                label.setAttribute('y', yScale(i) + barHeight / 2 + margin.top);
                 label.setAttribute('dy', '0.35em');
                 label.setAttribute('font-family', 'Inter, sans-serif');
                 label.setAttribute('font-size', '14');
-                label.setAttribute('fill', '#E5E7EB');
-                label.textContent = count;
+                label.setAttribute('fill', '#9CA3AF');
+                label.setAttribute('text-anchor', 'end');
+                label.textContent = labels[category] || category;
                 svg.appendChild(label);
+
+                // Value and count labels stacked
+                const valueText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                valueText.setAttribute('x', margin.left + xScale(values[i]) + textSpacing);
+                valueText.setAttribute('y', yScale(i) + barHeight / 2 + margin.top - 5);
+                valueText.setAttribute('font-family', 'Inter, sans-serif');
+                valueText.setAttribute('font-size', '12');
+                valueText.setAttribute('fill', '#E5E7EB');
+                valueText.setAttribute('text-anchor', 'start');
+                valueText.textContent = `EGP ${new Intl.NumberFormat('en-US').format(values[i].toFixed(2))}`;
+                svg.appendChild(valueText);
+
+                const countText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                countText.setAttribute('x', margin.left + xScale(values[i]) + textSpacing);
+                countText.setAttribute('y', yScale(i) + barHeight / 2 + margin.top + 10);
+                countText.setAttribute('font-family', 'Inter, sans-serif');
+                countText.setAttribute('font-size', '12');
+                countText.setAttribute('fill', '#9CA3AF');
+                countText.setAttribute('text-anchor', 'start');
+                countText.textContent = `(${percentages[i].toFixed(2)}%, ${counts[i]} items)`;
+                svg.appendChild(countText);
             });
 
             container.appendChild(svg);
         }
+
 
         function createGraph() {
             // Filter data based on current UI state
@@ -1415,19 +1525,37 @@
                 return datesMatch && abcMatch && kraljicMatch && supplierMatch && searchMatch;
             });
             
-            // Count items per ABC class
-            const abcCounts = filteredData.reduce((acc, item) => {
-                acc[item.abcClass] = (acc[item.abcClass] || 0) + 1;
+            const totalValue = filteredData.reduce((sum, item) => sum + item.annualConsumptionValue, 0);
+
+            // Count items and sum values per ABC class
+            const abcData = filteredData.reduce((acc, item) => {
+                const key = item.abcClass;
+                acc[key] = acc[key] || { value: 0, count: 0, percentage: 0 };
+                acc[key].value += item.annualConsumptionValue;
+                acc[key].count += 1;
                 return acc;
             }, {});
             
-            // Count items per Kraljic category
-            const kraljicCounts = filteredData.reduce((acc, item) => {
-                acc[item.kraljicClass] = (acc[item.kraljicClass] || 0) + 1;
+            // Calculate percentages for ABC
+            Object.keys(abcData).forEach(key => {
+                abcData[key].percentage = (abcData[key].value / totalValue) * 100;
+            });
+            
+            // Count items and sum values per Kraljic category
+            const kraljicData = filteredData.reduce((acc, item) => {
+                const key = item.kraljicClass;
+                acc[key] = acc[key] || { value: 0, count: 0, percentage: 0 };
+                acc[key].value += item.annualConsumptionValue;
+                acc[key].count += 1;
                 return acc;
             }, {});
-            
-            // Define colors for each category
+
+            // Calculate percentages for Kraljic
+            Object.keys(kraljicData).forEach(key => {
+                kraljicData[key].percentage = (kraljicData[key].value / totalValue) * 100;
+            });
+
+            // Define colors and labels for each category
             const abcColors = {
                 'A': '#22C55E', // Green
                 'B': '#F59E0B', // Yellow
@@ -1442,10 +1570,17 @@
                 'Non-Critical': '#10B981', // Green
                 'N/A': '#6B7280'
             };
-            
+            const kraljicLabels = {
+                'Strategic': 'Strategic',
+                'Leverage': 'Leverage',
+                'Bottleneck': 'Bottleneck',
+                'Non-Critical': 'Non-Critical',
+                'N/A': 'N/A'
+            };
+
             // Generate the graphs
-            createBarChart('abc-graph', abcCounts, abcColors);
-            createBarChart('kraljic-graph', kraljicCounts, kraljicColors);
+            createBarChart('abc-graph', abcData, abcColors, { A: 'Class A', B: 'Class B', C: 'Class C', 'N/A': 'N/A' }, totalValue);
+            createBarChart('kraljic-graph', kraljicData, kraljicColors, kraljicLabels, totalValue);
 
             // Show the graph section and hide the results section
             hideAllSections();
@@ -1568,12 +1703,6 @@
             kraljicMatrixSection.classList.remove('hidden');
         });
         
-        backToHomeLinkKraljic.addEventListener('click', (event) => {
-            event.preventDefault();
-            window.scrollTo(0, 0);
-            showHomeSections();
-        });
-        
         downloadTemplateLink.addEventListener('click', (event) => {
             event.preventDefault();
             downloadXlsxTemplate();
@@ -1666,28 +1795,21 @@
                 loadingIndicator.classList.add('hidden');
             }
         });
-
+        
         // Event listener for general search input
-        generalSearchInput.addEventListener('input', () => {
-             // Delay the rendering to avoid performance issues while typing
-            clearTimeout(this.debounceTimer);
-            this.debounceTimer = setTimeout(renderResults, 300);
-        });
-
+        generalSearchInput.addEventListener('input', handleOtherFilters);
+        
         // New event listener for the supplier text input
-        supplierInput.addEventListener('input', () => {
-             // Delay the rendering to avoid performance issues while typing
-            clearTimeout(this.debounceTimer);
-            this.debounceTimer = setTimeout(renderResults, 300);
-        });
+        supplierInput.addEventListener('input', handleOtherFilters);
         
         // Event listeners for sorting and filtering
-        sortSelect.addEventListener('change', displayResults);
-        startDateInput.addEventListener('change', renderResults);
-        endDateInput.addEventListener('change', renderResults);
-        abcClassSelect.addEventListener('change', displayResults);
-        kraljicCategorySelect.addEventListener('change', displayResults);
+        startDateInput.addEventListener('change', handleDateRangeChange);
+        endDateInput.addEventListener('change', handleDateRangeChange);
+        sortSelect.addEventListener('change', handleOtherFilters);
+        abcClassSelect.addEventListener('change', handleOtherFilters);
+        kraljicCategorySelect.addEventListener('change', handleOtherFilters);
         createGraphBtn.addEventListener('click', createGraph);
+        downloadResultsBtn.addEventListener('click', downloadAnalyzedResults);
         backToResultsLink.addEventListener('click', (event) => {
             event.preventDefault();
             window.scrollTo(0, 0);
