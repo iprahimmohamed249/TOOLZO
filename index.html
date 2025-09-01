@@ -690,7 +690,7 @@ Certified in Transportation.
                         <h3 class="text-xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Galaluddin Shahin</h3>
                         <p class="text-gray-400 text-sm mb-4">Galal.e.shahin@Gmail.com</p>
                         <p class="text-gray-300 text-md">
-                            Experienced Procurement Specialist with 8+ years in healthcare. I use my pharmacy and MBA skills to cut costs, find new suppliers, and manage contracts. Also certified in Strategic Procurement (AUC).
+                            Strategic Procurement Specialist leveraging 8+ years of experience and a hybrid pharmacy and MBA background to drive cost reduction and optimize supply chains. Certified in strategic sourcing, with a concept of delivering measurable value through high-stakes negotiations and vendor management.
                         </p>
                     </div>
                 </div>
@@ -949,7 +949,7 @@ Certified in Transportation.
         // Recommended Strategy for C-class items
         /* C+Strategic: avoid over investment */
         /* C+Leverage: bundle purchases for efficiency */
-        /* C+Bottleneck: hold minimal safety stock */
+        /* C+Bottleneck: hold safety stock */
         /* C+Non-Critical: low priority, standardize purchasing, keep lean and efficient */
 
         // Function to hide all main sections
@@ -1098,7 +1098,7 @@ Certified in Transportation.
                 if (supplyRisk === 'low' && valueImpact === 'low') {
                     item.kraljicClass = 'Non-Critical';
                 } else if (supplyRisk === 'low' && valueImpact === 'high') {
-                    kraljicClass = 'Leverage';
+                    item.kraljicClass = 'Leverage';
                 } else if (supplyRisk === 'high' && valueImpact === 'low') {
                     item.kraljicClass = 'Bottleneck';
                 } else if (supplyRisk === 'high' && valueImpact === 'high') {
@@ -1339,7 +1339,7 @@ Certified in Transportation.
              // Calculate the total value of this initially filtered set.
              totalValueForDateRange = tempFilteredData.reduce((sum, item) => 
                  sum + (parseFloat(String(item.annualConsumptionValue || '').replace(/,/g, '')) || 0), 0);
-            
+
              performAnalysis(tempFilteredData);
              displayResults();
         }
