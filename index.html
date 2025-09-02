@@ -526,6 +526,8 @@
                 </div>
                 <!-- Item count and total value display -->
                 <div id="item-count" class="text-center text-sm text-gray-400 mb-4"></div>
+                <!-- This value shows the percentage of items against the total items in the date range. -->
+                <div id="filtered-item-percentage" class="text-center text-sm text-gray-400 mb-4"></div>
                 <!-- This value dynamically updates based on the date range and all other filters. -->
                 <div id="filtered-total-value" class="text-center text-sm text-gray-400 mb-4"></div>
                 <!-- This value shows the percentage of the current total vs. the total for the selected date range. -->
@@ -995,6 +997,7 @@ Certified in Transportation.
         // New datalist element for supplier options
         const supplierDatalist = document.getElementById('supplier-list');
         const totalValueGraphDisplay = document.getElementById('total-value-graph-display');
+        const filteredItemPercentageElement = document.getElementById('filtered-item-percentage');
 
         // Kraljic Questionnaire elements
         const kraljicForm = document.getElementById('kraljic-form');
@@ -1013,8 +1016,9 @@ Certified in Transportation.
         let analyzedData = []; 
         let exportData = []; // New array to hold data for export
         let workbook = null; // To store the workbook for multi-sheet selection
-        let grandTotalAnnualConsumptionValue = 0; // New variable to store the total value of all items
+        let grandTotalSpendingValue = 0; // NEW: Changed the variable name
         let totalValueForDateRange = 0; // The total value for the currently selected date range
+        let totalItemsForDateRange = 0; // NEW: Added to track the number of items for the date range
         
         // Function to hide all main sections
         function hideAllSections() {
@@ -1073,13 +1077,13 @@ Certified in Transportation.
                 "Order Quantity", 
                 "Order Unit", 
                 "Net Price", 
-                "annualConsumptionValue", 
+                "Total spending value", // NEW: Changed the header here
                 "Name of Supplier", 
                 "supplyRisk", 
                 "valueImpact"
             ];
             
-            // Create data for the sheet. The formula for annualConsumptionValue is placed directly.
+            // Create data for the sheet. The formula for Total spending value is placed directly.
             const data = [
                 header,
                 ["", null, null, "", null, { f: "C2*E2" }, "", "", ""]
@@ -1122,19 +1126,17 @@ Certified in Transportation.
             const consolidatedData = data.reduce((acc, item) => {
                 if (!item.itemName) return acc;
                 const existingItem = acc[item.itemName];
-                const value = typeof item.annualConsumptionValue === 'string' && item.annualConsumptionValue.startsWith('=')
-                    ? parseFloat(item.annualConsumptionValue.replace(/[^0-9.]/g, '')) || 0
-                    : parseFloat(String(item.annualConsumptionValue || '').replace(/,/g, '')) || 0;
+                const value = parseFloat(String(item['Total spending value'] || item.annualConsumptionValue || '').replace(/,/g, '')) || 0; // NEW: Added fallback for older files
                 
                 if (existingItem) {
-                    existingItem.annualConsumptionValue += value;
+                    existingItem.totalSpendingValue += value; // NEW: Changed key
                     const itemDate = item['Document Date'] ? new Date(item['Document Date']) : null;
                     if (item['Name of Supplier']) existingItem.suppliers.add(item['Name of Supplier']);
                     if (itemDate && !isNaN(itemDate)) existingItem.dates.add(itemDate.toISOString().split('T')[0]);
                 } else {
                     acc[item.itemName] = { 
                         ...item,
-                        annualConsumptionValue: value,
+                        totalSpendingValue: value, // NEW: Changed key
                         suppliers: item['Name of Supplier'] ? new Set([item['Name of Supplier']]) : new Set(),
                         dates: item['Document Date'] ? new Set([new Date(item['Document Date']).toISOString().split('T')[0]]) : new Set()
                     };
@@ -1143,13 +1145,13 @@ Certified in Transportation.
             }, {});
 
             const tempAnalyzedData = Object.values(consolidatedData);
-            const totalValue = tempAnalyzedData.reduce((sum, item) => sum + item.annualConsumptionValue, 0);
+            const totalValue = tempAnalyzedData.reduce((sum, item) => sum + item.totalSpendingValue, 0); // NEW: Changed key
 
             // ABC Analysis
-            tempAnalyzedData.sort((a, b) => b.annualConsumptionValue - a.annualConsumptionValue);
+            tempAnalyzedData.sort((a, b) => b.totalSpendingValue - a.totalSpendingValue); // NEW: Changed key
             let cumulativeValue = 0;
             tempAnalyzedData.forEach(item => {
-                cumulativeValue += item.annualConsumptionValue;
+                cumulativeValue += item.totalSpendingValue; // NEW: Changed key
                 const cumulativePercentage = (cumulativeValue / totalValue) * 100;
                 if (cumulativePercentage <= 80) {
                     item.abcClass = 'A';
@@ -1249,10 +1251,10 @@ Certified in Transportation.
                     itemsToDisplay.sort((a, b) => new Date(Array.from(b.dates).sort()[0]) - new Date(Array.from(a.dates).sort()[0]));
                     break;
                 case 'value-asc':
-                    itemsToDisplay.sort((a, b) => a.annualConsumptionValue - b.annualConsumptionValue);
+                    itemsToDisplay.sort((a, b) => a.totalSpendingValue - b.totalSpendingValue); // NEW: Changed key
                     break;
                 case 'value-desc':
-                    itemsToDisplay.sort((a, b) => b.annualConsumptionValue - a.annualConsumptionValue);
+                    itemsToDisplay.sort((a, b) => b.totalSpendingValue - a.totalSpendingValue); // NEW: Changed key
                     break;
                 case 'abc-asc':
                     const abcOrderAsc = {'A': 1, 'B': 2, 'C': 3};
@@ -1265,18 +1267,23 @@ Certified in Transportation.
             }
             
             // Calculate the total consumption value for the currently displayed items
-            const filteredTotalValue = itemsToDisplay.reduce((sum, item) => sum + item.annualConsumptionValue, 0);
+            const filteredTotalValue = itemsToDisplay.reduce((sum, item) => sum + item.totalSpendingValue, 0); // NEW: Changed key
             
             // The base value for the percentage calculation is now the dynamic total for the date range.
             const baseValueForPercentage = totalValueForDateRange;
             
             const filteredValuePercentage = baseValueForPercentage > 0 ? (filteredTotalValue / baseValueForPercentage) * 100 : 0;
+            // NEW: Calculate the percentage of items
+            const filteredItemPercentage = totalItemsForDateRange > 0 ? (itemsToDisplay.length / totalItemsForDateRange) * 100 : 0;
+
 
             // Update the display text with the new dynamic values
-            itemCount.textContent = `Showing ${itemsToDisplay.length} items.`;
+            itemCount.textContent = `Showing ${itemsToDisplay.length} items out of ${totalItemsForDateRange} total items.`;
             // The Total Annual Consumption Value now only changes with the date interval.
-            filteredTotalValueElement.textContent = `Total Annual Consumption Value: EGP ${new Intl.NumberFormat('en-US').format(baseValueForPercentage.toFixed(2))}`;
-            totalValuePercentageElement.textContent = `Value Percentage of Filtered Items: ${filteredValuePercentage.toFixed(6)}%`;
+            filteredTotalValueElement.textContent = `Total spending value (periodically): EGP ${new Intl.NumberFormat('en-US').format(baseValueForPercentage.toFixed(2))}`; // NEW: Changed display text
+            totalValuePercentageElement.textContent = `Percentage of Total Spending: ${filteredValuePercentage.toFixed(6)}%`;
+            // NEW: Update the item percentage display
+            filteredItemPercentageElement.textContent = `Percentage of Items: ${filteredItemPercentage.toFixed(6)}%`;
 
 
             if (itemsToDisplay.length === 0) {
@@ -1300,12 +1307,12 @@ Certified in Transportation.
                 else if (item.kraljicClass === 'Non-Critical') kraljicColor = 'text-green-400';
 
                 // Format the number with commas
-                const formattedValue = new Intl.NumberFormat('en-US').format(item.annualConsumptionValue.toFixed(2));
+                const formattedValue = new Intl.NumberFormat('en-US').format(item.totalSpendingValue.toFixed(2)); // NEW: Changed key
                 const suppliersList = Array.from(item.suppliers).join(', ') || 'N/A';
                 const datesList = Array.from(item.dates).sort().join(', ');
                 
                 // New: Calculate the value percentage for the current item against the dynamic total value for the date range.
-                const itemValuePercentage = totalValueForDateRange > 0 ? (item.annualConsumptionValue / totalValueForDateRange) * 100 : 0;
+                const itemValuePercentage = totalValueForDateRange > 0 ? (item.totalSpendingValue / totalValueForDateRange) * 100 : 0; // NEW: Changed key
 
 
                 let recommendedStrategy = '';
@@ -1352,7 +1359,7 @@ Certified in Transportation.
                         <hr class="border-gray-700 my-4">
                         <h4 class="font-bold text-gray-200 mb-2">Detailed Analysis</h4>
                         <p class="text-gray-300 text-sm mb-2">
-                            <span class="font-semibold">Total Value:</span> EGP ${formattedValue}
+                            <span class="font-semibold">Total spending value:</span> EGP ${formattedValue} <!-- NEW: Changed text -->
                         </p>
                         <!-- New: Added value percentage to the item card -->
                         <p class="text-gray-300 text-sm mb-2">
@@ -1416,7 +1423,12 @@ Certified in Transportation.
             });
              // Calculate the total value of this initially filtered set.
              totalValueForDateRange = tempFilteredData.reduce((sum, item) => 
-                 sum + (parseFloat(String(item.annualConsumptionValue || '').replace(/,/g, '')) || 0), 0);
+                 sum + (parseFloat(String(item['Total spending value'] || item.annualConsumptionValue || '').replace(/,/g, '')) || 0), 0); // NEW: Changed key
+             // NEW: Calculate the total number of items for the date range
+             totalItemsForDateRange = Object.keys(tempFilteredData.reduce((acc, item) => {
+                 acc[item.itemName] = true;
+                 return acc;
+             }, {})).length;
 
              performAnalysis(tempFilteredData);
              displayResults();
@@ -1437,13 +1449,13 @@ Certified in Transportation.
                 "Order Quantity", 
                 "Order Unit", 
                 "Net Price", 
-                "annualConsumptionValue", 
+                "Total spending value", // NEW: Changed the header here
                 "Name of Supplier", 
                 "supplyRisk", 
                 "valueImpact"
             ];
             
-            // Create data for the sheet. The formula for annualConsumptionValue is placed directly.
+            // Create data for the sheet. The formula for Total spending value is placed directly.
             const data = [
                 header,
                 ["", null, null, "", null, { f: "C2*E2" }, "", "", ""]
@@ -1497,8 +1509,8 @@ Certified in Transportation.
             if (data.length > 0) {
                 rawData = data;
                 // New: Calculate the grand total consumption value of all raw data
-                grandTotalAnnualConsumptionValue = rawData.reduce((sum, item) => 
-                    sum + (parseFloat(String(item.annualConsumptionValue || '').replace(/,/g, '')) || 0)
+                grandTotalSpendingValue = rawData.reduce((sum, item) => 
+                    sum + (parseFloat(String(item['Total spending value'] || item.annualConsumptionValue || '').replace(/,/g, '')) || 0) // NEW: Changed key
                 , 0);
 
                 allSuppliers.clear();
@@ -1643,16 +1655,16 @@ Certified in Transportation.
                 return datesMatch && abcMatch && kraljicMatch && supplierMatch && searchMatch;
             });
             
-            const totalValue = filteredData.reduce((sum, item) => sum + item.annualConsumptionValue, 0);
+            const totalValue = filteredData.reduce((sum, item) => sum + item.totalSpendingValue, 0); // NEW: Changed key
 
             // Set the single total value for the section
-            totalValueGraphDisplay.textContent = `Total Value: EGP ${new Intl.NumberFormat('en-US').format(totalValue.toFixed(2))}`;
+            totalValueGraphDisplay.textContent = `Total spending value: EGP ${new Intl.NumberFormat('en-US').format(totalValue.toFixed(2))}`; // NEW: Changed text
 
             // Count items and sum values per ABC class
             const abcData = filteredData.reduce((acc, item) => {
                 const key = item.abcClass;
                 acc[key] = acc[key] || { value: 0, count: 0, percentage: 0 };
-                acc[key].value += item.annualConsumptionValue;
+                acc[key].value += item.totalSpendingValue; // NEW: Changed key
                 acc[key].count += 1;
                 return acc;
             }, {});
@@ -1666,7 +1678,7 @@ Certified in Transportation.
             const kraljicData = filteredData.reduce((acc, item) => {
                 const key = item.kraljicClass;
                 acc[key] = acc[key] || { value: 0, count: 0, percentage: 0 };
-                acc[key].value += item.annualConsumptionValue;
+                acc[key].value += item.totalSpendingValue; // NEW: Changed key
                 acc[key].count += 1;
                 return acc;
             }, {});
@@ -1883,7 +1895,8 @@ Certified in Transportation.
         backToHomeFromBatchLink.addEventListener('click', (event) => {
             event.preventDefault();
             window.scrollTo(0, 0);
-            showHomeSections();
+            hideAllSections();
+            batchAnalysisSection.classList.remove('hidden');
         });
 
         backToUploadLink.addEventListener('click', (event) => {
