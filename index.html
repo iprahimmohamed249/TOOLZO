@@ -964,6 +964,8 @@ Certified in Transportation.
         const backToUploadLink = document.getElementById('back-to-upload-link');
         const downloadTemplateLink2 = document.getElementById('download-template-link-2');
         const backToGetStartedLink = document.getElementById('back-to-get-started-link');
+        const backToHomeFromKraljic = document.getElementById('back-to-home-from-kraljic-link');
+
 
         // Batch analysis elements
         const excelFileInput = document.getElementById('excel-file-input');
@@ -1610,7 +1612,6 @@ Certified in Transportation.
                 countText.setAttribute('font-family', 'Inter, sans-serif');
                 countText.setAttribute('font-size', '12');
                 countText.setAttribute('fill', '#9CA3AF');
-                countText.setAttribute('text-anchor', 'start');
                 countText.textContent = `${itemPercentages[i].toFixed(2)}% of items`;
                 svg.appendChild(countText);
             });
@@ -1758,6 +1759,12 @@ Certified in Transportation.
             window.scrollTo(0, 0);
             hideAllSections();
             kraljicMatrixSection.classList.remove('hidden');
+        });
+
+        backToHomeFromKraljic.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showHomeSections();
         });
         
         downloadTemplateLink.addEventListener('click', (event) => {
