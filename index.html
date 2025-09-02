@@ -395,19 +395,19 @@
                     How would you like to get started?
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    <!-- Card 1: Analyze Single Item -->
-                    <div id="single-item-analysis-card" class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 hover:border-blue-500 cursor-pointer">
-                        <h3 class="text-2xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Analyze single item</h3>
-                        <p class="text-gray-400 text-lg">
-                            Conduct an in-depth, professional analysis of a single item. This method is ideal for detailed evaluation, allowing you to focus on specific data points and generate a comprehensive brief. Perfect for high-value or complex goods.
-                        </p>
-                    </div>
-
-                    <!-- Card 2: Batch analysis via Excel -->
+                    <!-- Original card: Batch analysis via Excel -->
                     <div id="batch-analysis-card" class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 hover:border-blue-500 cursor-pointer">
                         <h3 class="text-2xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Batch analysis via Excel</h3>
                         <p class="text-gray-400 text-lg">
                             Streamline your workflow by uploading an Excel sheet for bulk processing. This is the most efficient solution for large datasets, enabling you to analyze multiple items simultaneously and receive a comprehensive report in one go.
+                        </p>
+                    </div>
+
+                    <!-- New card: Kraljic Questionnaire -->
+                    <div id="kraljic-questionnaire-card" class="tool-card bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 hover:border-purple-500 cursor-pointer">
+                        <h3 class="text-2xl font-semibold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Kraljic Questionnaire</h3>
+                        <p class="text-gray-400 text-lg">
+                            Answer a series of questions to help you determine your item's position on the Kraljic Matrix. This is a great option for categorizing individual items.
                         </p>
                     </div>
                 </div>
@@ -450,76 +450,6 @@
                 <a href="#" id="back-to-home-from-batch-link" class="mt-12 block text-center text-blue-400 hover:text-blue-300 transition-colors font-medium">
                     &larr; Back to Home
                 </a>
-            </div>
-        </section>
-
-        <!-- Single Item Analysis Page -->
-        <section id="single-item-analysis-section" class="py-16 md:py-24 bg-gray-900 hidden">
-            <div class="container mx-auto px-4 md:px-8 text-center">
-                <a href="#" id="back-to-get-started-from-single-link" class="mb-8 block text-center text-blue-400 hover:text-blue-300 transition-colors font-medium">
-                    &larr; Back to Get Started
-                </a>
-                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-purple-400">
-                    Analyze a Single Item
-                </h2>
-                <div class="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 max-w-2xl mx-auto">
-                    <p class="text-gray-300 text-lg mb-6">
-                        Enter the details of a single item to get its classification based on your total inventory.
-                    </p>
-                    <form id="single-item-form" class="space-y-4 text-left">
-                        <div>
-                            <label for="total-items-count" class="block text-gray-400 text-sm font-semibold mb-2">Total Number of Items</label>
-                            <input type="number" id="total-items-count" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 500">
-                        </div>
-                        <div>
-                            <label for="total-consumption-value" class="block text-gray-400 text-sm font-semibold mb-2">Total Consumption Value of All Items</label>
-                            <input type="number" id="total-consumption-value" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 100000">
-                        </div>
-                        <div>
-                            <label for="order-quantity" class="block text-gray-400 text-sm font-semibold mb-2">Order Quantity</label>
-                            <input type="number" id="order-quantity" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 50">
-                        </div>
-                        <div>
-                            <label for="net-price" class="block text-gray-400 text-sm font-semibold mb-2">Net Price</label>
-                            <input type="number" id="net-price" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g., 20.00">
-                        </div>
-                        <div>
-                            <label for="annual-consumption-value" class="block text-gray-400 text-sm font-semibold mb-2">Annual Consumption Value (calculated)</label>
-                            <input type="text" id="annual-consumption-value" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600" readonly>
-                        </div>
-                        <div>
-                            <label for="supply-risk" class="block text-gray-400 text-sm font-semibold mb-2">Supply Risk</label>
-                            <select id="supply-risk" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                <option value="">Select...</option>
-                                <option value="low">Low</option>
-                                <option value="high">High</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="value-impact" class="block text-gray-400 text-sm font-semibold mb-2">Value Impact</label>
-                            <select id="value-impact" class="w-full p-3 rounded-lg bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                <option value="">Select...</option>
-                                <option value="low">Low</option>
-                                <option value="high">High</option>
-                            </select>
-                        </div>
-                        <button type="button" id="categorize-btn" class="w-full mt-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium py-3 px-8 rounded-full shadow-lg transform transition-transform duration-200 hover:scale-105">
-                            Categorize Item
-                        </button>
-                    </form>
-                    <div id="single-item-results" class="mt-8 hidden">
-                        <div class="bg-gray-700 rounded-xl p-6 shadow-md">
-                            <h4 class="text-xl font-bold text-purple-400 mb-4">Analysis Result</h4>
-                            <p class="text-lg text-gray-300 mb-2">
-                                <span class="font-semibold">ABC Class:</span> <span id="abc-result" class="font-bold"></span>
-                            </p>
-                            <p class="text-lg text-gray-300">
-                                <span class="font-semibold">Kraljic Category:</span> <span id="kraljic-result" class="font-bold"></span>
-                            </p>
-                            <div id="single-item-error" class="text-red-400 mt-4 hidden"></div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -603,6 +533,147 @@
                 <!-- Results container - changed to md:grid-cols-2 for tablet support -->
                 <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                     <!-- Cards will be dynamically inserted here -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Kraljic Questionnaire Page -->
+        <section id="kraljic-questionnaire-section" class="py-16 md:py-24 bg-gray-900 hidden">
+            <div class="container mx-auto px-4 md:px-8 text-center">
+                <a href="#" id="back-to-get-started-link" class="mb-8 block text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                    &larr; Back to Get Started
+                </a>
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-purple-400">
+                    Kraljic Questionnaire
+                </h2>
+                <p class="text-center text-gray-300 mb-8 max-w-lg mx-auto">
+                    Answer the questions below to categorize your product based on the Kraljic Matrix.
+                </p>
+                 <!-- Main Container -->
+                <div class="bg-gray-800 p-8 md:p-12 rounded-2xl shadow-xl max-w-lg w-full mx-auto">
+                    <!-- Form for Questions -->
+                    <form id="kraljic-form" class="space-y-6">
+
+                        <!-- Step 1: Profit Impact -->
+                        <div id="step-1" class="space-y-4">
+                            <h2 class="text-xl font-bold text-gray-100">Step 1: Assess Profit Impact</h2>
+                            <p class="text-gray-400">Please answer the following questions to determine the financial significance of this product.</p>
+                            <div class="space-y-4 p-4 rounded-xl border border-gray-700">
+                                <div>
+                                    <label class="block text-lg font-medium text-gray-300">
+                                        Is this product a significant component of our finished product?
+                                    </label>
+                                    <div class="mt-2 space-y-2">
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="profit-impact-significant" value="yes" class="form-radio h-5 w-5 text-purple-400" required>
+                                            <span class="text-gray-300">Yes</span>
+                                        </label>
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="profit-impact-significant" value="no" class="form-radio h-5 w-5 text-purple-400">
+                                            <span class="text-gray-300">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-lg font-medium text-gray-300">
+                                        Is this product a major part of our total spending?
+                                    </label>
+                                    <div class="mt-2 space-y-2">
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="profit-impact-spending" value="yes" class="form-radio h-5 w-5 text-purple-400" required>
+                                            <span class="text-gray-300">Yes</span>
+                                        </label>
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="profit-impact-spending" value="no" class="form-radio h-5 w-5 text-purple-400">
+                                            <span class="text-gray-300">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Supply Risk (Hidden by default, shown after Step 1) -->
+                        <div id="step-2" class="space-y-4 hidden">
+                            <h2 class="text-xl font-bold text-gray-100">Step 2: Assess Supply Risk</h2>
+                            <p class="text-gray-400">Please answer the following questions to determine the complexity of the supply chain for this product.</p>
+                            <div class="space-y-4 p-4 rounded-xl border border-gray-700">
+                                <div>
+                                    <label class="block text-lg font-medium text-gray-300">
+                                        How many potential suppliers are there for this product?
+                                    </label>
+                                    <div class="mt-2 space-y-2">
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="supply-risk-suppliers" value="many" class="form-radio h-5 w-5 text-purple-400" required>
+                                            <span class="text-gray-300">Many (Low risk)</span>
+                                        </label>
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="supply-risk-suppliers" value="few" class="form-radio h-5 w-5 text-purple-400">
+                                            <span class="text-gray-300">Few (High risk)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-lg font-medium text-gray-300">
+                                        Are there any readily available substitute products?
+                                    </label>
+                                    <div class="mt-2 space-y-2">
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="supply-risk-substitutes" value="yes" class="form-radio h-5 w-5 text-purple-400" required>
+                                            <span class="text-gray-300">Yes (Low risk)</span>
+                                        </label>
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="supply-risk-substitutes" value="no" class="form-radio h-5 w-5 text-purple-400">
+                                            <span class="text-gray-300">No (High risk)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-lg font-medium text-gray-300">
+                                        Does this product require special handling or have a short shelf life?
+                                    </label>
+                                    <div class="mt-2 space-y-2">
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="supply-risk-handling" value="no" class="form-radio h-5 w-5 text-purple-400" required>
+                                            <span class="text-gray-300">No (Low risk)</span>
+                                        </label>
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="supply-risk-handling" value="yes" class="form-radio h-5 w-5 text-purple-400">
+                                            <span class="text-gray-300">Yes (High risk)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-lg font-medium text-gray-300">
+                                        Is procurement frequently subject to long lead times or delays?
+                                    </label>
+                                    <div class="mt-2 space-y-2">
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="supply-risk-delays" value="no" class="form-radio h-5 w-5 text-purple-400" required>
+                                            <span class="text-gray-300">No (Low risk)</span>
+                                        </label>
+                                        <label class="flex items-center space-x-3 cursor-pointer">
+                                            <input type="radio" name="supply-risk-delays" value="yes" class="form-radio h-5 w-5 text-purple-400">
+                                            <span class="text-gray-300">Yes (High risk)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-center">
+                            <button type="submit" id="submit-btn" class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-full shadow-lg hover:from-purple-700 hover:to-blue-700 transition-colors duration-300">
+                                Categorize Product
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <!-- Result Section -->
+                    <div id="result" class="mt-8 p-6 rounded-2xl hidden border">
+                        <h2 id="result-title" class="text-2xl font-bold text-center mb-2 text-gray-100"></h2>
+                        <p id="result-description" class="text-center text-gray-300"></p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -840,6 +911,16 @@ Certified in Transportation.
         </div>
     </footer>
 
+    <!-- Custom Message Box for Errors -->
+    <div id="message-box" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-xl max-w-sm w-full text-center border border-gray-700">
+            <h3 id="message-text" class="text-lg font-medium text-gray-100 mb-4"></h3>
+            <button id="close-message" class="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-md hover:from-purple-700 hover:to-blue-700 transition-colors">
+                OK
+            </button>
+        </div>
+    </div>
+
     <script>
         // Get the splash screen and main content elements
         const splashScreen = document.getElementById('splash-screen');
@@ -852,9 +933,10 @@ Certified in Transportation.
         const kraljicMatrixSection = document.getElementById('kraljic-matrix-section');
         const getStartedSection = document.getElementById('get-started-section');
         const batchAnalysisSection = document.getElementById('batch-analysis-section');
-        const singleItemAnalysisSection = document.getElementById('single-item-analysis-section');
         const analysisResultsSection = document.getElementById('analysis-results-section');
         const analysisGraphSection = document.getElementById('analysis-graph-section');
+        const kraljicQuestionnaireCard = document.getElementById('kraljic-questionnaire-card');
+        const kraljicQuestionnaireSection = document.getElementById('kraljic-questionnaire-section');
         
         // Navigation links
         const aboutLink = document.getElementById('about-link');
@@ -877,13 +959,11 @@ Certified in Transportation.
         const downloadTemplateLink = document.getElementById('download-template-link');
         const getStartedBtn = document.getElementById('get-started-btn');
         const batchAnalysisCard = document.getElementById('batch-analysis-card');
-        const singleItemAnalysisCard = document.getElementById('single-item-analysis-card');
         const backToHomeFromGetStartedLink = document.getElementById('back-to-home-from-get-started-link');
         const backToHomeFromBatchLink = document.getElementById('back-to-home-from-batch-link');
         const backToUploadLink = document.getElementById('back-to-upload-link');
         const downloadTemplateLink2 = document.getElementById('download-template-link-2');
-        const backToGetStartedFromSingleLink = document.getElementById('back-to-get-started-from-single-link');
-
+        const backToGetStartedLink = document.getElementById('back-to-get-started-link');
 
         // Batch analysis elements
         const excelFileInput = document.getElementById('excel-file-input');
@@ -914,6 +994,17 @@ Certified in Transportation.
         const supplierDatalist = document.getElementById('supplier-list');
         const totalValueGraphDisplay = document.getElementById('total-value-graph-display');
 
+        // Kraljic Questionnaire elements
+        const kraljicForm = document.getElementById('kraljic-form');
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+        const resultDiv = document.getElementById('result');
+        const resultTitle = document.getElementById('result-title');
+        const resultDescription = document.getElementById('result-description');
+        const messageBox = document.getElementById('message-box');
+        const messageText = document.getElementById('message-text');
+        const closeMessageBtn = document.getElementById('close-message');
+
         let rawData = [];
         let allSuppliers = new Set();
         let allDates = [];
@@ -922,39 +1013,7 @@ Certified in Transportation.
         let workbook = null; // To store the workbook for multi-sheet selection
         let grandTotalAnnualConsumptionValue = 0; // New variable to store the total value of all items
         let totalValueForDateRange = 0; // The total value for the currently selected date range
-
-        // Single item analysis elements
-        const totalItemsCountInput = document.getElementById('total-items-count');
-        const totalConsumptionValueInput = document.getElementById('total-consumption-value');
-        const orderQuantityInput = document.getElementById('order-quantity');
-        const netPriceInput = document.getElementById('net-price');
-        const annualConsumptionValueInput = document.getElementById('annual-consumption-value');
-        const supplyRiskSelect = document.getElementById('supply-risk');
-        const valueImpactSelect = document.getElementById('value-impact');
-        const categorizeBtn = document.getElementById('categorize-btn');
-        const singleItemResultsDiv = document.getElementById('single-item-results');
-        const abcResultSpan = document.getElementById('abc-result');
-        const kraljicResultSpan = document.getElementById('kraljic-result');
-        const singleItemErrorDiv = document.getElementById('single-item-error');
         
-        // Recommended Strategy for A-class items
-        /* A+Strategic: critical item, secure long-term contracts, monitor supply chain risks */
-        /* A+Leverage: use volume to negotiate and optimize supplier relationships */
-        /* A+Bottleneck: develop backup suppliers, increase safety stock */
-        /* A+Non-Critical: not real */
-
-        // Recommended Strategy for B-class items
-        /* B+Strategic: maintain supplier relationships */
-        /* B+Leverage: regularly benchmark prices */
-        /* B+Bottleneck: keep a safety buffer and alternative suppliers */
-        /* B+Non-Critical: standardize purchasing, keep lean and efficient, automated */
-
-        // Recommended Strategy for C-class items
-        /* C+Strategic: avoid over investment */
-        /* C+Leverage: bundle purchases for efficiency */
-        /* C+Bottleneck: hold safety stock */
-        /* C+Non-Critical: low priority, standardize purchasing, keep lean and efficient */
-
         // Function to hide all main sections
         function hideAllSections() {
             heroSection.classList.add('hidden');
@@ -965,9 +1024,9 @@ Certified in Transportation.
             kraljicMatrixSection.classList.add('hidden');
             getStartedSection.classList.add('hidden');
             batchAnalysisSection.classList.add('hidden');
-            singleItemAnalysisSection.classList.add('hidden');
             analysisResultsSection.classList.add('hidden');
             analysisGraphSection.classList.add('hidden');
+            kraljicQuestionnaireSection.classList.add('hidden');
             // Hide the mobile menu when navigating
             mobileMenu.classList.remove('is-open');
             overlay.classList.remove('is-open');
@@ -988,6 +1047,11 @@ Certified in Transportation.
         function showContactSection() {
             hideAllSections();
             contactSection.classList.remove('hidden');
+        }
+
+        function showKraljicQuestionnaireSection() {
+            hideAllSections();
+            kraljicQuestionnaireSection.classList.remove('hidden');
         }
 
         // Function to hide the splash screen and show the main content
@@ -1094,21 +1158,29 @@ Certified in Transportation.
                 }
             });
 
-            // Kraljic Matrix Analysis
+            // Kraljic Matrix Analysis - now automatically determines valueImpact from abcClass
             tempAnalyzedData.forEach(item => {
                 const supplyRisk = (item.supplyRisk || '').toLowerCase().trim();
-                const valueImpact = (item.valueImpact || '').toLowerCase().trim();
-                if (supplyRisk === 'low' && valueImpact === 'low') {
-                    item.kraljicClass = 'Non-Critical';
-                } else if (supplyRisk === 'low' && valueImpact === 'high') {
+                let valueImpact = '';
+                if (item.abcClass === 'A' || item.abcClass === 'B') {
+                    valueImpact = 'High';
+                } else {
+                    valueImpact = 'Low';
+                }
+                
+                if (supplyRisk === 'low' && valueImpact === 'High') {
                     item.kraljicClass = 'Leverage';
-                } else if (supplyRisk === 'high' && valueImpact === 'low') {
-                    item.kraljicClass = 'Bottleneck';
-                } else if (supplyRisk === 'high' && valueImpact === 'high') {
+                } else if (supplyRisk === 'low' && valueImpact === 'Low') {
+                    item.kraljicClass = 'Non-Critical';
+                } else if (supplyRisk === 'high' && valueImpact === 'High') {
                     item.kraljicClass = 'Strategic';
+                } else if (supplyRisk === 'high' && valueImpact === 'Low') {
+                    item.kraljicClass = 'Bottleneck';
                 } else {
                     item.kraljicClass = 'N/A';
                 }
+                // Update the item's valueImpact property for display in the result card
+                item.valueImpact = valueImpact;
             });
             
             // Store the consolidated data for the UI
@@ -1122,7 +1194,8 @@ Certified in Transportation.
                     return {
                         ...item,
                         "ABC Class": consolidatedItem.abcClass,
-                        "Kraljic Category": consolidatedItem.kraljicClass
+                        "Kraljic Category": consolidatedItem.kraljicClass,
+                        "valueImpact": consolidatedItem.valueImpact
                     };
                 }
                 return { ...item, "ABC Class": 'N/A', "Kraljic Category": 'N/A' };
@@ -1290,7 +1363,7 @@ Certified in Transportation.
                             <span class="font-semibold">Original supply risk:</span> ${item.supplyRisk}
                         </p>
                          <p class="text-gray-300 text-sm mb-2">
-                            <span class="font-semibold">Original value impact:</span> ${item.valueImpact}
+                            <span class="font-semibold">Value impact:</span> ${item.valueImpact}
                         </p>
                          <p class="text-gray-300 text-sm mt-4">
                             <strong>Recommended Strategy:</strong> ${recommendedStrategy}
@@ -1455,7 +1528,7 @@ Certified in Transportation.
         // --- End Core File Processing Logic ---
         
         // --- Graphing Logic ---
-        function createBarChart(containerId, data, barColors, labels) {
+        function createBarChart(containerId, data, barColors, labels, totalItemCount) {
             const container = document.getElementById(containerId);
             container.innerHTML = ''; // Clear previous graph
             const categories = Object.keys(data);
@@ -1470,13 +1543,15 @@ Certified in Transportation.
             const values = categories.map(key => data[key].value);
             const percentages = categories.map(key => data[key].percentage);
             const counts = categories.map(key => data[key].count);
+            // Calculate item percentage
+            const itemPercentages = counts.map(count => (count / totalItemCount) * 100);
 
             const maxValue = Math.max(...values);
             const maxCount = Math.max(...counts);
 
-            const width = 500;
+            const width = 1000; // Increased width for better text visibility
             const height = 300;
-            const margin = { top: 40, right: 20, bottom: 50, left: 150 }; // Increased left and top margins
+            const margin = { top: 40, right: 20, bottom: 50, left: 150 };
             const svgWidth = width + margin.left + margin.right;
             const svgHeight = height + margin.top + margin.bottom;
             const barSpacing = 10;
@@ -1515,25 +1590,28 @@ Certified in Transportation.
                 label.textContent = labels[category] || category;
                 svg.appendChild(label);
 
-                // Value and count labels stacked
+                // Value and percentage label
                 const valueText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 valueText.setAttribute('x', margin.left + xScale(values[i]) + textSpacing);
-                valueText.setAttribute('y', yScale(i) + barHeight / 2 + margin.top - 5);
+                valueText.setAttribute('y', yScale(i) + barHeight / 2 + margin.top);
+                valueText.setAttribute('dy', '-0.25em');
                 valueText.setAttribute('font-family', 'Inter, sans-serif');
                 valueText.setAttribute('font-size', '12');
                 valueText.setAttribute('fill', '#E5E7EB');
                 valueText.setAttribute('text-anchor', 'start');
-                valueText.textContent = `EGP ${new Intl.NumberFormat('en-US').format(values[i].toFixed(2))}`;
+                valueText.textContent = `EGP ${new Intl.NumberFormat('en-US').format(values[i].toFixed(2))} | ${percentages[i].toFixed(2)}%`;
                 svg.appendChild(valueText);
 
+                // Item percentage label
                 const countText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 countText.setAttribute('x', margin.left + xScale(values[i]) + textSpacing);
-                countText.setAttribute('y', yScale(i) + barHeight / 2 + margin.top + 10);
+                countText.setAttribute('y', yScale(i) + barHeight / 2 + margin.top);
+                countText.setAttribute('dy', '0.75em');
                 countText.setAttribute('font-family', 'Inter, sans-serif');
                 countText.setAttribute('font-size', '12');
                 countText.setAttribute('fill', '#9CA3AF');
                 countText.setAttribute('text-anchor', 'start');
-                countText.textContent = `(${percentages[i].toFixed(2)}%, ${counts[i]} items)`;
+                countText.textContent = `${itemPercentages[i].toFixed(2)}% of items`;
                 svg.appendChild(countText);
             });
 
@@ -1621,77 +1699,14 @@ Certified in Transportation.
             };
 
             // Generate the graphs
-            createBarChart('abc-graph', abcData, abcColors, { A: 'Class A', B: 'Class B', C: 'Class C', 'N/A': 'N/A' }, totalValue);
-            createBarChart('kraljic-graph', kraljicData, kraljicColors, kraljicLabels, totalValue);
+            createBarChart('abc-graph', abcData, abcColors, { A: 'Class A', B: 'Class B', C: 'Class C', 'N/A': 'N/A' }, filteredData.length);
+            createBarChart('kraljic-graph', kraljicData, kraljicColors, kraljicLabels, filteredData.length);
 
             // Show the graph section and hide the results section
             hideAllSections();
             analysisGraphSection.classList.remove('hidden');
         }
 
-        function analyzeSingleItem() {
-            const totalItemsCount = parseFloat(totalItemsCountInput.value);
-            const totalConsumptionValue = parseFloat(totalConsumptionValueInput.value);
-            const orderQuantity = parseFloat(orderQuantityInput.value);
-            const netPrice = parseFloat(netPriceInput.value);
-            const supplyRisk = supplyRiskSelect.value;
-            const valueImpact = valueImpactSelect.value;
-
-            singleItemErrorDiv.textContent = '';
-            singleItemErrorDiv.classList.add('hidden');
-            singleItemResultsDiv.classList.add('hidden');
-
-            if (isNaN(totalItemsCount) || isNaN(totalConsumptionValue) || isNaN(orderQuantity) || isNaN(netPrice) || !supplyRisk || !valueImpact) {
-                singleItemErrorDiv.textContent = "Please fill in all the fields correctly.";
-                singleItemErrorDiv.classList.remove('hidden');
-                return;
-            }
-
-            const annualConsumptionValue = orderQuantity * netPrice;
-            annualConsumptionValueInput.value = annualConsumptionValue.toFixed(2);
-            
-            // ABC Analysis based on a simplified percentage of total value
-            const percentageOfTotalValue = (annualConsumptionValue / totalConsumptionValue) * 100;
-            let abcClass = 'N/A';
-            // These thresholds are a simplified proxy for ABC analysis
-            if (percentageOfTotalValue >= 10) {
-                abcClass = 'A';
-            } else if (percentageOfTotalValue >= 1) {
-                abcClass = 'B';
-            } else {
-                abcClass = 'C';
-            }
-
-            // Kraljic Matrix Analysis
-            let kraljicClass = 'N/A';
-            if (supplyRisk === 'low' && valueImpact === 'low') {
-                kraljicClass = 'Non-Critical';
-            } else if (supplyRisk === 'low' && valueImpact === 'high') {
-                kraljicClass = 'Leverage';
-            } else if (supplyRisk === 'high' && valueImpact === 'low') {
-                kraljicClass = 'Bottleneck';
-            } else if (supplyRisk === 'high' && valueImpact === 'high') {
-                kraljicClass = 'Strategic';
-            }
-
-            // Display results
-            abcResultSpan.textContent = abcClass;
-            let abcColor = 'text-gray-400';
-            if (abcClass === 'A') abcColor = 'text-green-400';
-            else if (abcClass === 'B') abcColor = 'text-yellow-400';
-            else if (abcClass === 'C') abcColor = 'text-red-400';
-            abcResultSpan.className = `font-bold ${abcColor}`;
-
-            kraljicResultSpan.textContent = kraljicClass;
-            let kraljicColor = 'text-gray-400';
-            if (kraljicClass === 'Strategic') kraljicColor = 'text-purple-400';
-            else if (kraljicClass === 'Leverage') kraljicColor = 'text-blue-400';
-            else if (kraljicClass === 'Bottleneck') kraljicColor = 'text-red-400';
-            else if (kraljicClass === 'Non-Critical') kraljicColor = 'text-green-400';
-            kraljicResultSpan.className = `font-bold ${kraljicColor}`;
-
-            singleItemResultsDiv.classList.remove('hidden');
-        }
         
         // Event listeners for navigation links
         aboutLink.addEventListener('click', (event) => {
@@ -1761,26 +1776,19 @@ Certified in Transportation.
             showGetStartedSection();
         });
         
-        singleItemAnalysisCard.addEventListener('click', (event) => {
-            event.preventDefault();
-            window.scrollTo(0, 0);
-            hideAllSections();
-            singleItemAnalysisSection.classList.remove('hidden');
-        });
-
         batchAnalysisCard.addEventListener('click', (event) => {
             event.preventDefault();
             window.scrollTo(0, 0);
             hideAllSections();
             batchAnalysisSection.classList.remove('hidden');
         });
-        
-        backToGetStartedFromSingleLink.addEventListener('click', (event) => {
+
+        kraljicQuestionnaireCard.addEventListener('click', (event) => {
             event.preventDefault();
             window.scrollTo(0, 0);
-            showGetStartedSection();
+            showKraljicQuestionnaireSection();
         });
-        
+
         // This new event listener for the file input handles the initial file load and UI update
         excelFileInput.addEventListener('change', async (event) => {
             const file = event.target.files[0];
@@ -1877,9 +1885,12 @@ Certified in Transportation.
             hideAllSections();
             batchAnalysisSection.classList.remove('hidden');
         });
-        
-        // Event listener for single item analysis
-        categorizeBtn.addEventListener('click', analyzeSingleItem);
+
+        backToGetStartedLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.scrollTo(0, 0);
+            showGetStartedSection();
+        });
         
         // Mobile menu toggle
         mobileMenuBtn.addEventListener('click', () => {
@@ -1916,7 +1927,99 @@ Certified in Transportation.
              window.scrollTo(0, 0);
              showContactSection();
         });
+        
+        // ---- Kraljic Questionnaire Logic ----
+        // Show message box
+        const showMessage = (text) => {
+            messageText.textContent = text;
+            messageBox.classList.remove('hidden');
+        };
 
+        // Hide message box
+        closeMessageBtn.addEventListener('click', () => {
+            messageBox.classList.add('hidden');
+        });
+
+        // Show or hide Step 2 based on Step 1 completion
+        const step1Inputs = kraljicForm.querySelectorAll('input[name="profit-impact-significant"], input[name="profit-impact-spending"]');
+        step1Inputs.forEach(input => {
+            input.addEventListener('change', () => {
+                const isSignificantAnswered = kraljicForm.querySelector('input[name="profit-impact-significant"]:checked');
+                const isSpendingAnswered = kraljicForm.querySelector('input[name="profit-impact-spending"]:checked');
+                if (isSignificantAnswered && isSpendingAnswered) {
+                    step2.classList.remove('hidden');
+                    resultDiv.classList.add('hidden');
+                } else {
+                    step2.classList.add('hidden');
+                }
+            });
+        });
+
+        // Handle form submission
+        kraljicForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            // Get answers and calculate scores
+            let profitScore = 0;
+            let supplyScore = 0;
+
+            const significant = kraljicForm.querySelector('input[name="profit-impact-significant"]:checked')?.value;
+            const spending = kraljicForm.querySelector('input[name="profit-impact-spending"]:checked')?.value;
+            const suppliers = kraljicForm.querySelector('input[name="supply-risk-suppliers"]:checked')?.value;
+            const substitutes = kraljicForm.querySelector('input[name="supply-risk-substitutes"]:checked')?.value;
+            const handling = kraljicForm.querySelector('input[name="supply-risk-handling"]:checked')?.value;
+            const delays = kraljicForm.querySelector('input[name="supply-risk-delays"]:checked')?.value;
+
+            // Validate that all questions are answered
+            if (!significant || !spending || !suppliers || !substitutes || !handling || !delays) {
+                showMessage("Please answer all the questions to get a result.");
+                return;
+            }
+
+            // Calculate Profit Impact Score
+            if (significant === 'yes') profitScore += 2;
+            if (spending === 'yes') profitScore += 2;
+
+            // Calculate Supply Risk Score
+            if (suppliers === 'few') supplyScore += 2;
+            if (substitutes === 'no') supplyScore += 2;
+            if (handling === 'yes') supplyScore += 1;
+            if (delays === 'yes') supplyScore += 1;
+            
+            // Determine category based on scores
+            let category = '';
+            let description = '';
+            let resultColorClass = '';
+
+            // Profit Impact Threshold: High if score is 3 or 4, Low if 0, 1, or 2
+            const isHighProfit = profitScore >= 3;
+            // Supply Risk Threshold: High if score is 3 or higher, Low if 0, 1, or 2
+            const isHighSupplyRisk = supplyScore >= 3;
+
+            if (isHighProfit && isHighSupplyRisk) {
+                category = 'Strategic Item';
+                description = 'This product is critical to your business and has a high supply risk. Focus on building long-term, collaborative relationships with your suppliers.';
+                resultColorClass = 'border-purple-400';
+            } else if (isHighProfit && !isHighSupplyRisk) {
+                category = 'Leverage Item';
+                description = 'This product is important to your business but easy to source. Focus on leveraging your purchasing power to get the best price.';
+                resultColorClass = 'border-blue-400';
+            } else if (!isHighProfit && isHighSupplyRisk) {
+                category = 'Bottleneck Item';
+                description = 'This product has a low profit impact but is difficult to source. Focus on ensuring a reliable supply to prevent operational shutdowns.';
+                resultColorClass = 'border-red-400';
+            } else { // !isHighProfit && !isHighSupplyRisk
+                category = 'Non-critical Item';
+                description = 'This product is easy to find and has a low impact on your business. Use a simple, streamlined procurement process.';
+                resultColorClass = 'border-green-400';
+            }
+
+            // Display result
+            resultDiv.classList.remove('hidden');
+            resultDiv.className = `mt-8 p-6 rounded-2xl transition-all duration-500 border ${resultColorClass}`;
+            resultTitle.textContent = category;
+            resultDescription.textContent = description;
+        });
 
         // Use a setTimeout to control the duration of the animation before hiding the splash screen
         window.onload = function() {
