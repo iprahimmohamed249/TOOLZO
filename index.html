@@ -991,7 +991,7 @@ Certified in Transportation.
         const sheetSelect = document.getElementById('sheet-select');
         const createGraphBtn = document.getElementById('create-graph-btn');
         const downloadResultsBtn = document.getElementById('download-results-btn');
-        const backToResultsLink = document = document.getElementById('back-to-results-link');
+        const backToResultsLink = document.getElementById('back-to-results-link');
         const abcGraphContainer = document.getElementById('abc-graph');
         const kraljicGraphContainer = document.getElementById('kraljic-graph');
         // New datalist element for supplier options
@@ -1398,7 +1398,7 @@ Certified in Transportation.
         // New function to handle the download of the analyzed data
         function downloadAnalyzedResults() {
             if (exportData.length === 0) {
-                alert('No data to download. Please upload a file and run the analysis first.');
+                showMessage('No data to download. Please upload a file and run the analysis first.');
                 return;
             }
 
@@ -1895,8 +1895,7 @@ Certified in Transportation.
         backToHomeFromBatchLink.addEventListener('click', (event) => {
             event.preventDefault();
             window.scrollTo(0, 0);
-            hideAllSections();
-            batchAnalysisSection.classList.remove('hidden');
+            showHomeSections();
         });
 
         backToUploadLink.addEventListener('click', (event) => {
